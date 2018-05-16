@@ -1,0 +1,22 @@
+================================================================================
+|| TODO
+================================================================================
+
+ - Stop calculating scaling every draw operation; do it at object level instead?
+  -> Will require doing the maths to figure how to calculate big G using the
+     scale factor.
+
+ - Expand library of pre-defined entities
+ 
+ - Include offset when drawing each Entity, so they are centred around their
+   x, y position
+   
+ - Finish unit tests
+ 
+ - Create some logic to centre camera on the barycentre of all objects at each
+   frame, to prevent system drifting off-screen
+ 
+ - Dynamic resizing of simulation window depending on size of separations at
+   each frame?
+
+ - Still some strange orbit behaviour under some circumstances
