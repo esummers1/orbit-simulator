@@ -1,8 +1,11 @@
-package main;
+package physics;
 
 import java.util.List;
 
 import entities.Entity;
+import entities.PhysicsEntity;
+import main.Camera;
+import main.Simulation;
 
 public abstract class Physics {
     
@@ -40,21 +43,20 @@ public abstract class Physics {
         double gravity = getGravityMagnitude(thisEntity, otherEntity);
         double bearing = getBearing(thisEntity, otherEntity);
         
-        return convertToForceVector(gravity, bearing);        
+        return convertToForceVector(new BearingVector(gravity, bearing));        
     }
     
     /**
      * Given a vector in the form of a magnitude and a bearing, return a Force 
      * object containing the x- and y- components of that vector.
-     * @param magnitude
-     * @param bearing
+     * @param vector
      * @return Force
      */
-    public static Force convertToForceVector(double magnitude, double bearing) {
+    public static Force convertToForceVector(BearingVector vector) {
         
         return new Force(
-                magnitude * Math.sin(bearing), 
-                magnitude * -1 * Math.cos(bearing));
+                vector.getMagnitude() * Math.sin(vector.getBearing()), 
+                vector.getMagnitude() * -1 * Math.cos(vector.getBearing()));
     }
     
     /**
@@ -67,11 +69,14 @@ public abstract class Physics {
     public static double getBearing(Entity thisEntity, Entity otherEntity) {
         
         double theta = Math.PI + Math.atan(
-                (otherEntity.getX() - thisEntity.getX())/
-                (thisEntity.getY() - otherEntity.getY()));
+                (otherEntity.getPosition().getX() - 
+                thisEntity.getPosition().getX())/
+                (thisEntity.getPosition().getY() - 
+                otherEntity.getPosition().getY()));
         
         // Compensate for ambiguity in tangent function.
-        if (thisEntity.getY() > otherEntity.getX()) {
+        if (thisEntity.getPosition().getY() > 
+                otherEntity.getPosition().getX()) {
            theta += Math.PI;
         }
         
@@ -117,8 +122,8 @@ public abstract class Physics {
      */
     public static double getXDistance(Entity thisEntity, Entity otherEntity) {
         
-        double thisX = thisEntity.getX();
-        double otherX = otherEntity.getX();
+        double thisX = thisEntity.getPosition().getX();
+        double otherX = otherEntity.getPosition().getX();
         
         return otherX - thisX;
     }
@@ -132,8 +137,8 @@ public abstract class Physics {
      */
     public static double getYDistance(Entity thisEntity, Entity otherEntity) {
         
-        double thisY = thisEntity.getY();
-        double otherY = otherEntity.getY();
+        double thisY = thisEntity.getPosition().getY();
+        double otherY = otherEntity.getPosition().getY();
         
         return otherY - thisY;
     }
@@ -150,8 +155,8 @@ public abstract class Physics {
         double xAcc = force.getX() / mass;
         double yAcc = force.getY() / mass;
         
-        entity.setXVel(entity.getXVel() + xAcc * Constants.TIME_STEP);
-        entity.setYVel(entity.getYVel() + yAcc * Constants.TIME_STEP);
+        entity.setXVel(entity.getXVel() + xAcc * Simulation.getTimeStep());
+        entity.setYVel(entity.getYVel() + yAcc * Simulation.getTimeStep());
     }
     
     /**
@@ -163,9 +168,70 @@ public abstract class Physics {
         
         double xVel = entity.getXVel();
         double yVel = entity.getYVel();
+        entity.setPositionDirectly(
+                    entity.getPosition().getX() + 
+                    xVel * Simulation.getTimeStep(),
+                    entity.getPosition().getY() + 
+                    yVel * Simulation.getTimeStep());
+    }
+    
+    /**
+     * Update the Camera with the new barycentre and scale of the system.
+     * @param entities
+     */
+    public static void updateCamera(List<Entity> entities) {
         
-        entity.setX(entity.getX() + xVel * Constants.TIME_STEP);
-        entity.setY(entity.getY() + yVel * Constants.TIME_STEP);
+        // Calculate barycentre and assign to camera
+        Camera.setCentreOfFrame(calculateBarycentre(entities));
+        
+        // Update zoom factor based on positions of objects
+        // TODO
+        
+    }
+    
+    /**
+     * For a list of entities, calculate their current shared centre of mass
+     * (i.e. their orbital barycentre).
+     * @param entities
+     * @return Position
+     */
+    public static Position calculateBarycentre(List<Entity> entities) {
+        
+        Entity combinedEntity = entities.get(0);
+        
+        for (Entity entity : entities) {
+            combinedEntity = getCentreOfMass(combinedEntity, entity);
+        }
+        
+        return combinedEntity.getPosition();
+    }
+    
+    /**
+     * Given a pair of entities, return an Entity representing their shared
+     * centre of mass.
+     * @param thisEntity
+     * @param otherEntity
+     * @return Entity
+     */
+    public static Entity getCentreOfMass(Entity thisEntity, 
+            Entity otherEntity) {
+        
+        // Get components of centre of mass using torque-summing technique
+        double xComponent = 
+                ((thisEntity.getMass() * thisEntity.getPosition().getX()) +
+                (otherEntity.getMass() * otherEntity.getPosition().getX())) /
+                (thisEntity.getMass() + otherEntity.getMass());
+        
+        double yComponent = 
+                ((thisEntity.getMass() * thisEntity.getPosition().getY()) +
+                (otherEntity.getMass() * otherEntity.getPosition().getY())) /
+                (thisEntity.getMass() + otherEntity.getMass());
+        
+        Position centreOfMass = new Position(xComponent, yComponent);
+        
+        return new PhysicsEntity(
+                thisEntity.getMass() + otherEntity.getMass(), 
+                centreOfMass);
     }
     
 }

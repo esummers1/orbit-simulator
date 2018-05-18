@@ -1,1 +1,3 @@
-"#orbiter-java" 
+## Orbit Simulator
+
+A two-dimensional physics sandbox.

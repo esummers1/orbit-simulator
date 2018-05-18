@@ -9,9 +9,10 @@ import org.junit.Test;
 import entities.Earth;
 import entities.Entity;
 import entities.Moon;
-import main.Constants;
-import main.Force;
-import main.Physics;
+import physics.BearingVector;
+import physics.Constants;
+import physics.Force;
+import physics.Physics;
 
 public class PhysicsTest {
     
@@ -41,7 +42,8 @@ public class PhysicsTest {
         
         // GIVEN a vector of magnitude 1 and bearing 45 degrees
         // WHEN I convert this vector to a Force
-        Force force = Physics.convertToForceVector(1, 45 * Math.PI / 180);
+        BearingVector vector = new BearingVector(1, 45 * Math.PI / 180);
+        Force force = Physics.convertToForceVector(vector);
         
         // THEN I receive a Force of (0.7, -0.7)
         double xError = Math.abs(force.getX() - 0.7);
@@ -55,7 +57,8 @@ public class PhysicsTest {
         
         // GIVEN a vector of magnitude 1 and bearing 135 degrees
         // WHEN I convert this vector to a Force
-        Force force = Physics.convertToForceVector(1, 135 * Math.PI / 180);
+        BearingVector vector = new BearingVector(1, 135 * Math.PI / 180);
+        Force force = Physics.convertToForceVector(vector);
         
         // THEN I receive a Force of (0.7, 0.7)
         double xError = Math.abs(force.getX() - 0.7);
@@ -69,7 +72,8 @@ public class PhysicsTest {
         
         // GIVEN a vector of magnitude 1 and bearing 225 degrees
         // WHEN I convert this vector to a Force
-        Force force = Physics.convertToForceVector(1, 225 * Math.PI / 180);
+        BearingVector vector = new BearingVector(1, 225 * Math.PI / 180);
+        Force force = Physics.convertToForceVector(vector);
         
         // THEN I receive a Force of (-0.7, 0.7)
         double xError = Math.abs(force.getX() - (-0.7));
@@ -83,7 +87,8 @@ public class PhysicsTest {
         
         // GIVEN a vector of magnitude 1 and bearing 315 degrees
         // WHEN I convert this vector to a Force
-        Force force = Physics.convertToForceVector(1, 315 * Math.PI / 180);
+        BearingVector vector = new BearingVector(1, 315 * Math.PI / 180);
+        Force force = Physics.convertToForceVector(vector);
         
         // THEN I receive a Force of (-0.7, -0.7)
         double xError = Math.abs(force.getX() - (-0.7));
@@ -138,6 +143,7 @@ public class PhysicsTest {
         double bearingInDegrees = (bearing / Math.PI * 180) % 360;
         
         // THEN I receive approx. 225 degrees
+        System.out.println(bearingInDegrees);
         assert(bearingInDegrees > 224 && bearingInDegrees < 226);
     }
     
@@ -246,8 +252,8 @@ public class PhysicsTest {
         Physics.projectEntity(entity);
         
         // THEN its new position is (time step, time step)
-        assert(entity.getX() == Constants.TIME_STEP);
-        assert(entity.getY() == Constants.TIME_STEP);
+        assert(entity.getPosition().getX() == Constants.TIME_STEP);
+        assert(entity.getPosition().getY() == Constants.TIME_STEP);
     }
     
 }

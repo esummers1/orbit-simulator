@@ -3,7 +3,9 @@ package entities;
 import java.awt.Color;
 import java.awt.Graphics2D;
 
-import main.Constants;
+import main.Camera;
+import physics.Constants;
+import physics.Position;
 
 public class Entity {
     
@@ -12,8 +14,7 @@ public class Entity {
     private double radius;
     private double xVel;
     private double yVel;
-    private double x;
-    private double y;
+    private Position position;
     
     private Color colour;
     
@@ -31,11 +32,18 @@ public class Entity {
         this.setRadius(radius);
         this.setXVel(xVel);
         this.setYVel(yVel);
-        this.setX(x);
-        this.setY(y);
+        this.setPosition(new Position(x, y));
         this.setColour(colour);
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+    
     public double getMass() {
         return mass;
     }
@@ -68,22 +76,6 @@ public class Entity {
         this.yVel = yVel;
     }
 
-    public double getX() {
-        return x;
-    }
-
-    public void setX(double x) {
-        this.x = x;
-    }
-
-    public double getY() {
-        return y;
-    }
-
-    public void setY(double y) {
-        this.y = y;
-    }
-
     public Color getColour() {
         return colour;
     }
@@ -91,14 +83,46 @@ public class Entity {
     public void setColour(Color colour) {
         this.colour = colour;
     }
+
+    public Position getPosition() {
+        return position;
+    }
+
+    public void setPosition(Position position) {
+        this.position = position;
+    }
+    
+    public void setPositionDirectly(double x, double y) {
+        this.position.setX(x);
+        this.position.setY(y);
+    }
     
     public void draw(Graphics2D g) {
-        double scaledX = this.x / Constants.SCALE_FACTOR;
-        double scaledY = this.y / Constants.SCALE_FACTOR;
         
-        // Originally this.radius * 2 for realism, obviously
-        // TODO: export this to Constants, i.e. entity display scale
-        double scaledDiameter = (this.radius * 6) / Constants.SCALE_FACTOR;
+        /**
+         * Calculate on-screen position of Entity for rendering. This takes into
+         * account the current scaling as well as the offset calculated from the
+         * position of the system's centre of mass at this moment.
+         * TODO: clean up this garbage
+         */
+        double scaleFactor = Constants.SCALE_FACTOR;
+        double windowSize = Constants.WINDOW_SIZE * scaleFactor;
+        
+        double baseX = position.getX() + radius;
+        double baseY = position.getY() + radius;
+        
+        double adjustX = Camera.getCentreOfFrame().getX();
+        double adjustY = Camera.getCentreOfFrame().getY();
+        
+        double unscaledX = baseX + (windowSize / 2 - adjustX);
+        double unscaledY = baseY + (windowSize / 2 - adjustY);
+        
+        double scaledX = unscaledX / scaleFactor;
+        double scaledY = unscaledY / scaleFactor;
+        
+        double scaledDiameter = 
+                (radius * 2 * Constants.ENTITY_DISPLAY_SCALE_FACTOR) / 
+                Constants.SCALE_FACTOR;
         
         g.setColor(colour);
         g.fillOval(
@@ -106,14 +130,6 @@ public class Entity {
                 (int) scaledY,
                 (int) scaledDiameter,
                 (int) scaledDiameter);
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
     
 }

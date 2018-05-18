@@ -4,18 +4,26 @@ import java.util.ArrayList;
 import java.util.List;
 
 import entities.Entity;
+import physics.Constants;
+import physics.Force;
+import physics.Physics;
 
 public class Simulation {
     
     private List<Entity> entities;
     private Display display;
+    private static double timeStep;
     
-    public Simulation(List<Entity> entities) {
+    public Simulation(List<Entity> entities, double timeAcceleration) {
         this.entities = entities;
-        
+        Simulation.timeStep = timeAcceleration / Constants.FRAME_RATE;
         display = new Display(this);
     }
     
+    /**
+     * Return a list of the names of all entities in the simulaton.
+     * @return List<String>
+     */
     public List<String> getEntityNames() {
         List<String> names = new ArrayList<>();
         
@@ -24,6 +32,10 @@ public class Simulation {
         }
         
         return names;
+    }
+    
+    public static double getTimeStep() {
+        return timeStep;
     }
     
     /**
@@ -63,10 +75,13 @@ public class Simulation {
             Physics.applyForce(entity, resultantGravity);
         }
         
-        // Move each entity over one time step according to new velocity.
+        // Move each entity over one time step according to new velocity
         for (Entity entity : entities) {
             Physics.projectEntity(entity);
         }
+        
+        // Update camera with new situation
+        Physics.updateCamera(entities);
     }
     
     /**
@@ -107,7 +122,7 @@ public class Simulation {
     /**
      * Given an Entity, return a list of all other Entities in the simulation.
      * @param entity
-     * @return Entity
+     * @return List<Entity>
      */
     private List<Entity> getAllOtherEntities(Entity entity) {
         
@@ -123,7 +138,7 @@ public class Simulation {
     }
     
     /**
-     * Render next frame.
+     * Render results of this step.
      */
     private void render() {
         display.getPanel().setObjects(entities);

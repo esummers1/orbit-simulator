@@ -2,21 +2,23 @@
 || TODO
 ================================================================================
 
- - Stop calculating scaling every draw operation; do it at object level instead?
-  -> Will require doing the maths to figure how to calculate big G using the
-     scale factor.
+ - Finish unit tests; figure out strange orbit behaviours
+   -> also test against real-world calculations
 
- - Expand library of pre-defined entities
- 
- - Include offset when drawing each Entity, so they are centred around their
-   x, y position
-   
- - Finish unit tests
- 
- - Create some logic to centre camera on the barycentre of all objects at each
-   frame, to prevent system drifting off-screen
- 
  - Dynamic resizing of simulation window depending on size of separations at
    each frame?
+   -> complete zoom calculation
+   -> work out how to best implement zoom
+   -> move scale factor responsibility from Constants to Camera
+ 
+ - Review timeStep calculation logic - should simulation speed up as framerate
+   is increased...? (it doesn't)
 
- - Still some strange orbit behaviour under some circumstances
+ - Expand library of pre-defined entities
+   -> come up with better way than a large number of subclasses, e.g. Entity
+      class has some fields which can be populated using custom constant objs
+ 
+ - Refactor hideous camera offset calculation code in Entity.draw()
+ 
+ - BIG FEATURE: collision mechanics for bodies that come within radius
+   -> Objects combine, use combined mass and 4/3 pi ^3 to calc new radius

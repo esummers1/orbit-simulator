@@ -2,6 +2,8 @@ package main;
 
 import javax.swing.JFrame;
 
+import physics.Constants;
+
 public class Display {
     
     private JFrame frame;
@@ -12,8 +14,13 @@ public class Display {
         
         names = "";
         
-        for (String name : sim.getEntityNames()) {
-            names = names + name + ", ";
+        // Construct list of Entity names for title
+        for (int i = 0; i < sim.getEntityNames().size(); i++) {
+            names = names + sim.getEntityNames().get(i);
+            
+            if (i != sim.getEntityNames().size() - 1) {
+                names = names + ", ";
+            } 
         }
         
         panel = new MyPanel(Constants.WINDOW_SIZE, Constants.WINDOW_SIZE);
