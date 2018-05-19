@@ -4,21 +4,17 @@
 
  - Finish unit tests; figure out strange orbit behaviours
    -> also test against real-world calculations
-
- - Dynamic resizing of simulation window depending on size of separations at
-   each frame?
-   -> complete zoom calculation
-   -> work out how to best implement zoom
-   -> move scale factor responsibility from Constants to Camera
+   -> there is a momentary inflexion that occurs at the cardinal directions
+     --> maybe to do with tangent function asymptotes?
  
  - Review timeStep calculation logic - should simulation speed up as framerate
    is increased...? (it doesn't)
 
- - Expand library of pre-defined entities
-   -> come up with better way than a large number of subclasses, e.g. Entity
-      class has some fields which can be populated using custom constant objs
- 
  - Refactor hideous camera offset calculation code in Entity.draw()
+ 
+ - Bug: something is making bodies get rendered off-centre
+   -> gets worse as entity display scale factor increases
+     --> review algebra, may need to introduce this factor into scaled position
  
  - BIG FEATURE: collision mechanics for bodies that come within radius
    -> Objects combine, use combined mass and 4/3 pi ^3 to calc new radius

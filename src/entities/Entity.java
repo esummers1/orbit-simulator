@@ -1,63 +1,30 @@
 package entities;
 
-import java.awt.Color;
 import java.awt.Graphics2D;
 
 import main.Camera;
+import main.Simulation;
 import physics.Constants;
 import physics.Position;
 
 public class Entity {
     
-    private String name;
-    private double mass;
-    private double radius;
+    private Body body;
     private double xVel;
     private double yVel;
     private Position position;
     
-    private Color colour;
-    
     public Entity(
-            String name,
-            double mass, 
-            double radius,
+            Body body,
             double xVel, 
             double yVel, 
             double x,
-            double y,
-            Color colour) {
-        this.setName(name);
-        this.setMass(mass);
-        this.setRadius(radius);
+            double y) {
+        
+        this.setBody(body);
         this.setXVel(xVel);
         this.setYVel(yVel);
         this.setPosition(new Position(x, y));
-        this.setColour(colour);
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-    
-    public double getMass() {
-        return mass;
-    }
-
-    public void setMass(double mass) {
-        this.mass = mass;
-    }
-
-    public double getRadius() {
-        return radius;
-    }
-
-    public void setRadius(double radius) {
-        this.radius = radius;
     }
 
     public double getXVel() {
@@ -74,14 +41,6 @@ public class Entity {
 
     public void setYVel(double yVel) {
         this.yVel = yVel;
-    }
-
-    public Color getColour() {
-        return colour;
-    }
-
-    public void setColour(Color colour) {
-        this.colour = colour;
     }
 
     public Position getPosition() {
@@ -105,11 +64,11 @@ public class Entity {
          * position of the system's centre of mass at this moment.
          * TODO: clean up this garbage
          */
-        double scaleFactor = Constants.SCALE_FACTOR;
+        double scaleFactor = Simulation.getSizedScaleFactor();
         double windowSize = Constants.WINDOW_SIZE * scaleFactor;
         
-        double baseX = position.getX() + radius;
-        double baseY = position.getY() + radius;
+        double baseX = position.getX() + body.getRadius();
+        double baseY = position.getY() + body.getRadius();
         
         double adjustX = Camera.getCentreOfFrame().getX();
         double adjustY = Camera.getCentreOfFrame().getY();
@@ -121,15 +80,23 @@ public class Entity {
         double scaledY = unscaledY / scaleFactor;
         
         double scaledDiameter = 
-                (radius * 2 * Constants.ENTITY_DISPLAY_SCALE_FACTOR) / 
-                Constants.SCALE_FACTOR;
+                (body.getRadius() * 2 * Constants.ENTITY_DISPLAY_SCALE_FACTOR) / 
+                Simulation.getSizedScaleFactor();
         
-        g.setColor(colour);
+        g.setColor(body.getColour());
         g.fillOval(
                 (int) scaledX, 
                 (int) scaledY,
                 (int) scaledDiameter,
                 (int) scaledDiameter);
+    }
+
+    public Body getBody() {
+        return body;
+    }
+
+    public void setBody(Body body) {
+        this.body = body;
     }
     
 }

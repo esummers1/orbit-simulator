@@ -2,9 +2,8 @@ package physics;
 
 import java.util.List;
 
+import entities.Body;
 import entities.Entity;
-import entities.PhysicsEntity;
-import main.Camera;
 import main.Simulation;
 
 public abstract class Physics {
@@ -95,8 +94,8 @@ public abstract class Physics {
             Entity otherEntity) {
         
         return Constants.BIG_G * 
-                thisEntity.getMass() * 
-                otherEntity.getMass() /
+                thisEntity.getBody().getMass() * 
+                otherEntity.getBody().getMass() /
                 Math.pow(getDistance(thisEntity, otherEntity), 2);
     }
     
@@ -150,7 +149,7 @@ public abstract class Physics {
      */
     public static void applyForce(Entity entity, Force force) {
         
-        double mass = entity.getMass();
+        double mass = entity.getBody().getMass();
         
         double xAcc = force.getX() / mass;
         double yAcc = force.getY() / mass;
@@ -173,20 +172,6 @@ public abstract class Physics {
                     xVel * Simulation.getTimeStep(),
                     entity.getPosition().getY() + 
                     yVel * Simulation.getTimeStep());
-    }
-    
-    /**
-     * Update the Camera with the new barycentre and scale of the system.
-     * @param entities
-     */
-    public static void updateCamera(List<Entity> entities) {
-        
-        // Calculate barycentre and assign to camera
-        Camera.setCentreOfFrame(calculateBarycentre(entities));
-        
-        // Update zoom factor based on positions of objects
-        // TODO
-        
     }
     
     /**
@@ -216,22 +201,29 @@ public abstract class Physics {
     public static Entity getCentreOfMass(Entity thisEntity, 
             Entity otherEntity) {
         
-        // Get components of centre of mass using torque-summing technique
-        double xComponent = 
-                ((thisEntity.getMass() * thisEntity.getPosition().getX()) +
-                (otherEntity.getMass() * otherEntity.getPosition().getX())) /
-                (thisEntity.getMass() + otherEntity.getMass());
+        double thisMass = thisEntity.getBody().getMass();
+        double thisX = thisEntity.getPosition().getX();
+        double thisY = thisEntity.getPosition().getY();
         
-        double yComponent = 
-                ((thisEntity.getMass() * thisEntity.getPosition().getY()) +
-                (otherEntity.getMass() * otherEntity.getPosition().getY())) /
-                (thisEntity.getMass() + otherEntity.getMass());
+        double otherMass = otherEntity.getBody().getMass();
+        double otherX = otherEntity.getPosition().getX();
+        double otherY = otherEntity.getPosition().getY();
+        
+        // Get components of centre of mass using torque-summing technique
+        double xComponent = ((thisMass * thisX) + (otherMass * otherX)) /
+                (thisMass + otherMass);
+        
+        double yComponent = ((thisMass * thisY) + (otherMass * otherY)) /
+                (thisMass + otherMass);
         
         Position centreOfMass = new Position(xComponent, yComponent);
         
-        return new PhysicsEntity(
-                thisEntity.getMass() + otherEntity.getMass(), 
-                centreOfMass);
+        return new Entity(
+                new Body("", thisMass + otherMass, 0, null),
+                0,
+                0,
+                centreOfMass.getX(),
+                centreOfMass.getY());
     }
     
 }

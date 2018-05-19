@@ -12,11 +12,21 @@ public class Simulation {
     
     private List<Entity> entities;
     private Display display;
+    
+    // Number of simulated seconds that pass per simulation step
     private static double timeStep;
     
-    public Simulation(List<Entity> entities, double timeAcceleration) {
+    // Spatial scale factor with window size taken into account, i.e. m/px
+    private static double sizedScaleFactor;
+    
+    public Simulation(
+            List<Entity> entities, 
+            double timeAcceleration,
+            double scaleFactor) {
+        
         this.entities = entities;
         Simulation.timeStep = timeAcceleration / Constants.FRAME_RATE;
+        Simulation.sizedScaleFactor = scaleFactor / Constants.WINDOW_SIZE;
         display = new Display(this);
     }
     
@@ -28,7 +38,7 @@ public class Simulation {
         List<String> names = new ArrayList<>();
         
         for (Entity entity : entities) {
-            names.add(entity.getName());
+            names.add(entity.getBody().getName());
         }
         
         return names;
@@ -36,6 +46,10 @@ public class Simulation {
     
     public static double getTimeStep() {
         return timeStep;
+    }
+    
+    public static double getSizedScaleFactor() {
+        return sizedScaleFactor;
     }
     
     /**
@@ -81,7 +95,7 @@ public class Simulation {
         }
         
         // Update camera with new situation
-        Physics.updateCamera(entities);
+        Camera.setCentreOfFrame(Physics.calculateBarycentre(entities));
     }
     
     /**

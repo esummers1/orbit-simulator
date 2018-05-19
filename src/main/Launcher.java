@@ -1,11 +1,11 @@
 package main;
 
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 
-import entities.Earth;
+import entities.Body;
 import entities.Entity;
-import entities.Moon;
 import physics.Constants;
 import physics.Physics;
 
@@ -13,31 +13,41 @@ public class Launcher {
     
     public static void main(String[] args) {
         
-        // Create simultation entities
+        /**
+         * Body library for use in entity creation
+         * TODO: Revise responsibility for this
+         */
+        Body earthBody = new Body("Earth", 5.97 * Math.pow(10, 24), 
+                6.37 * Math.pow(10, 6), Color.BLUE);
+        Body marsBody = new Body("Mars", 6.42 * Math.pow(10, 23),
+                3.39 * Math.pow(10, 6), Color.RED);
+        Body moonBody = new Body("Moon", 7.34 * Math.pow(10, 22),
+                1.74 * Math.pow(10, 6), Color.GRAY);
+        Body jupiterBody = new Body("Jupiter", 1.90 * Math.pow(10, 27),
+                7.15 * Math.pow(10, 7), Color.ORANGE);
+        Body venusBody = new Body("Venus", 4.87 * Math.pow(10, 24),
+                6.05 * Math.pow(10, 6), Color.YELLOW);
+        Body sunBody = new Body("Sun", 1.99 * Math.pow(10, 30),
+                6.96 * Math.pow(10, 8), Color.WHITE);
+        
+        // Create simulation entities
         List<Entity> entities = new ArrayList<>();
         
-        Entity earth = new Earth(
-                0,
-                0,
-                0.5 * Constants.WINDOW_SIZE * Constants.SCALE_FACTOR, 
-                0.5 * Constants.WINDOW_SIZE * Constants.SCALE_FACTOR);
+        Entity earth = new Entity(earthBody, 0, 0, 0, 0);
         entities.add(earth);
         
-        Entity moon = new Moon(
-                0,
-                1.02 * Math.pow(10, 3),
-                earth.getPosition().getX() + 3.84 * Math.pow(10, 8),
-                earth.getPosition().getY());
-        entities.add(moon);
-        
         // Update camera with entity starting positions
-        Physics.updateCamera(entities);
+        Camera.setCentreOfFrame(Physics.calculateBarycentre(entities));
         
-        // Define time acceleration factor
-        double timeAcceleration = 100000;
+        // Define time acceleration factor (values > 5*10^5 not recommended)
+        double timeAcceleration = Math.pow(10, 5);
+        
+        // Define simulation display factor
+        double scaleFactor = Math.pow(10, 8.5);
         
         // Begin simulation
-        Simulation sim = new Simulation(entities, timeAcceleration);
+        Simulation sim = 
+                new Simulation(entities, timeAcceleration, scaleFactor);
         sim.run();
         
     }

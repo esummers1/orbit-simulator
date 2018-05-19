@@ -36,7 +36,6 @@ public class Display {
         frame.pack();
         frame.setLocationRelativeTo(null);
         return frame;
-        
     }
     
     public JFrame getFrame() {
