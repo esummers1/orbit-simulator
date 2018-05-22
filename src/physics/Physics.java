@@ -2,39 +2,47 @@ package physics;
 
 import java.util.List;
 
-import entities.Body;
 import entities.Entity;
 import main.Simulation;
 
 /**
- * Class containing static physics utility methods.
+ * Class containing physics utility methods (involving forces, accelerations and
+ * vector maths).
  * 
  * @author Eddie Summers
  */
 public abstract class Physics {
     
- // Universal gravitational constant
+    // Universal gravitational constant
     public static final double BIG_G = 6.674 * Math.pow(10, -11);
     
     /**
-     * Given a list of Force objects, resolve them into a single resultant
-     * Force.
-     * @param forces
+     * Given a list of XYVectors, resolve them into a single resultant XYVector.
+     * @param vectors
      * @return XYVector
      */
-    public static XYVector resolveForces(List<XYVector> forces) {
+    public static XYVector resolveVectors(List<XYVector> vectors) {
         
-        XYVector resultantForce = new XYVector(0, 0);
+        XYVector resultantVector = new XYVector(0, 0);
         
-        for (XYVector force : forces) {
-            double x = resultantForce.getX();
-            double y = resultantForce.getY();
-            
-            resultantForce.setX(x + force.getX());
-            resultantForce.setY(y + force.getY());
+        for (XYVector vector : vectors) {
+            resultantVector.setX(resultantVector.getX() + vector.getX());
+            resultantVector.setY(resultantVector.getY() + vector.getY());
         }
         
-        return resultantForce;
+        return resultantVector;
+    }
+    
+    /**
+     * Convert a BearingVector to an XYVector.
+     * @param vector
+     * @return XYVector
+     */
+    public static XYVector convertToXYVector(BearingVector vector) {
+        
+        return new XYVector(
+                vector.getMagnitude() * Math.sin(vector.getBearing()), 
+                vector.getMagnitude() * -1 * Math.cos(vector.getBearing()));
     }
     
     /**
@@ -48,47 +56,9 @@ public abstract class Physics {
             Entity otherEntity) {
         
         double gravity = getGravityMagnitude(thisEntity, otherEntity);
-        double bearing = getBearing(thisEntity, otherEntity);
+        double bearing = Geometry.getBearing(thisEntity, otherEntity);
         
-        return convertToForceVector(new BearingVector(gravity, bearing));        
-    }
-    
-    /**
-     * Given a vector in the form of a magnitude and a bearing, return a Force 
-     * object containing the x- and y- components of that vector.
-     * @param vector
-     * @return XYVector
-     */
-    public static XYVector convertToForceVector(BearingVector vector) {
-        
-        return new XYVector(
-                vector.getMagnitude() * Math.sin(vector.getBearing()), 
-                vector.getMagnitude() * -1 * Math.cos(vector.getBearing()));
-    }
-    
-    /**
-     * Given a pair of entities, calculate the bearing (from negative-y, i.e.
-     * upwards on-screen) of the 'other' from the 'this', in radians.
-     * @param thisEntity
-     * @param otherEntity
-     * @return double
-     */
-    public static double getBearing(Entity thisEntity, Entity otherEntity) {
-        
-        double theta = Math.PI + Math.atan(
-                (otherEntity.getPosition().getX() - 
-                thisEntity.getPosition().getX())/
-                (thisEntity.getPosition().getY() - 
-                otherEntity.getPosition().getY()));
-        
-        // Compensate for ambiguity in tangent function.
-        if (thisEntity.getPosition().getY() > 
-                otherEntity.getPosition().getX()) {
-           theta += Math.PI;
-        }
-        
-        // Resolve to bearing below 2 PI if it's gone all the way round.
-        return theta % (2 * Math.PI);
+        return convertToXYVector(new BearingVector(gravity, bearing));        
     }
     
     /**
@@ -104,70 +74,34 @@ public abstract class Physics {
         return BIG_G * 
                 thisEntity.getBody().getMass() * 
                 otherEntity.getBody().getMass() /
-                Math.pow(getDistance(thisEntity, otherEntity), 2);
+                Math.pow(Geometry.getDistance(thisEntity, otherEntity), 2);
     }
     
     /**
-     * Given a pair of entities, calculate the absolute distance between them.
-     * @param thisEntity
-     * @param otherEntity
-     * @return double
+     * For a list of entities, calculate their current shared centre of mass
+     * (i.e. their orbital barycentre).
+     * @param entities
+     * @return Position
      */
-    public static double getDistance(Entity thisEntity, Entity otherEntity) {
+    public static Position calculateBarycentre(List<Entity> entities) {
         
-        return Math.sqrt(
-                Math.pow(getXDistance(thisEntity, otherEntity), 2) +
-                Math.pow(getYDistance(thisEntity, otherEntity), 2));
+        double xTorques = 0;
+        double yTorques = 0;
+        double masses = 0;
+        
+        for (Entity entity : entities) {
+            xTorques += 
+                    (entity.getBody().getMass() * entity.getPosition().getX());
+            yTorques +=
+                    (entity.getBody().getMass() * entity.getPosition().getY());
+            masses += entity.getBody().getMass();
+        }
+        
+        return new Position(xTorques / masses, yTorques / masses);
     }
     
     /**
-     * Given a pair of entities, calculate the X-component of the distance
-     * between them.
-     * @param thisEntity
-     * @param otherEntity
-     * @return double
-     */
-    public static double getXDistance(Entity thisEntity, Entity otherEntity) {
-        
-        double thisX = thisEntity.getPosition().getX();
-        double otherX = otherEntity.getPosition().getX();
-        
-        return otherX - thisX;
-    }
-    
-    /**
-     * Given a pair of entities, calculate the Y-component of the distance
-     * between them.
-     * @param thisEntity
-     * @param otherEntity
-     * @return double
-     */
-    public static double getYDistance(Entity thisEntity, Entity otherEntity) {
-        
-        double thisY = thisEntity.getPosition().getY();
-        double otherY = otherEntity.getPosition().getY();
-        
-        return otherY - thisY;
-    }
-    
-    /**
-     * Apply a force to an entity over the time step.
-     * @param entity
-     * @param force
-     */
-    public static void applyForce(Entity entity, XYVector force) {
-        
-        double mass = entity.getBody().getMass();
-        
-        double xAcc = force.getX() / mass;
-        double yAcc = force.getY() / mass;
-        
-        entity.setXVel(entity.getXVel() + xAcc * Simulation.getTimeStep());
-        entity.setYVel(entity.getYVel() + yAcc * Simulation.getTimeStep());
-    }
-    
-    /**
-     * Recalculate and apply an entity's position if it moves under its current
+     * Recalculate and apply an Entity's position if it moves under its current
      * velocity for one time step.
      * @param entity
      */
@@ -183,55 +117,19 @@ public abstract class Physics {
     }
     
     /**
-     * For a list of entities, calculate their current shared centre of mass
-     * (i.e. their orbital barycentre).
-     * @param entities
-     * @return Position
+     * Apply a force in the form of an XYVector to an Entity over one time step.
+     * @param entity
+     * @param force
      */
-    public static Position calculateBarycentre(List<Entity> entities) {
+    public static void applyForce(Entity entity, XYVector force) {
         
-        Entity combinedEntity = entities.get(0);
+        double mass = entity.getBody().getMass();
         
-        for (Entity entity : entities) {
-            combinedEntity = getCentreOfMass(combinedEntity, entity);
-        }
+        double xAcc = force.getX() / mass;
+        double yAcc = force.getY() / mass;
         
-        return combinedEntity.getPosition();
-    }
-    
-    /**
-     * Given a pair of entities, return an Entity representing their shared
-     * centre of mass.
-     * @param thisEntity
-     * @param otherEntity
-     * @return Entity
-     */
-    public static Entity getCentreOfMass(Entity thisEntity, 
-            Entity otherEntity) {
-        
-        double thisMass = thisEntity.getBody().getMass();
-        double thisX = thisEntity.getPosition().getX();
-        double thisY = thisEntity.getPosition().getY();
-        
-        double otherMass = otherEntity.getBody().getMass();
-        double otherX = otherEntity.getPosition().getX();
-        double otherY = otherEntity.getPosition().getY();
-        
-        // Get components of centre of mass using torque-summing technique
-        double xComponent = ((thisMass * thisX) + (otherMass * otherX)) /
-                (thisMass + otherMass);
-        
-        double yComponent = ((thisMass * thisY) + (otherMass * otherY)) /
-                (thisMass + otherMass);
-        
-        Position centreOfMass = new Position(xComponent, yComponent);
-        
-        return new Entity(
-                new Body("", thisMass + otherMass, 0, null),
-                0,
-                0,
-                centreOfMass.getX(),
-                centreOfMass.getY());
+        entity.setXVel(entity.getXVel() + xAcc * Simulation.getTimeStep());
+        entity.setYVel(entity.getYVel() + yAcc * Simulation.getTimeStep());
     }
     
 }

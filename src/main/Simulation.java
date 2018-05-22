@@ -115,7 +115,7 @@ public class Simulation {
     }
     
     /**
-     * Return a single Force describing the gravitational pull from all other
+     * Return a single XYVector describing the gravitational pull from all other
      * Entities on the passed Entity.
      * @param entity
      * @return XYVector
@@ -126,12 +126,12 @@ public class Simulation {
         List<XYVector> gravitationalForces = 
                 getGravitationalForces(entity, otherEntities);
         
-        return Physics.resolveForces(gravitationalForces);        
+        return Physics.resolveVectors(gravitationalForces);        
     }
     
     /**
-     * Return a list of Forces describing the gravitational pull from a list of
-     * Entities on a single Entity.
+     * Return a list of XYVectors describing the gravitational pull from a list 
+     * of Entities on a single Entity.
      * @param entity
      * @param otherEntities
      * @return List<XYVector>

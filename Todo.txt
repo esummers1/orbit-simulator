@@ -6,15 +6,10 @@
    -> also test against real-world calculations
    -> there is a momentary inflexion that occurs at the cardinal directions
      --> maybe to do with tangent function asymptotes?
- 
- - Review timeStep calculation logic - should simulation speed up as framerate
-   is increased...? (it doesn't)
 
  - Bug: something is making bodies get rendered off-centre
    -> gets worse as entity display scale factor increases
      --> review algebra, may need to introduce this factor into scaled position
- 
- - Refactor Body to be an inner class of Entity?
  
  - BIG FEATURE: collision mechanics for bodies that come within radius
    -> Objects combine, use combined mass and 4/3 pi ^3 to calc new radius
