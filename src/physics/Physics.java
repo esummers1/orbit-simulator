@@ -16,8 +16,8 @@ public abstract class Physics {
     public static final double BIG_G = 6.674 * Math.pow(10, -11);
     
     /**
-     * Calculate the gravitational attraction Force from otherEntity to
-     * thisEntity.
+     * Calculate the gravitational attraction force from otherEntity upon
+     * thisEntity, returned as an XYVector.
      * @param thisEntity
      * @param otherEntity
      * @return XYVector
@@ -26,6 +26,7 @@ public abstract class Physics {
             Entity otherEntity) {
         
         double gravity = getGravityMagnitude(thisEntity, otherEntity);
+        
         double bearing = Geometry.calculateBearing(
                 thisEntity.getPosition(), otherEntity.getPosition());
         

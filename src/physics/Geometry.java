@@ -3,7 +3,7 @@ package physics;
 import java.util.List;
 
 /**
- * Class containing geometric utility methods (e.g. those involving angles and
+ * Class containing geometric utility methods (those involving angles and
  * co-ordinates, rather than forces and accelerations).
  * 
  * @author Eddie Summers
@@ -11,7 +11,7 @@ import java.util.List;
 public abstract class Geometry {
 
     /**
-     * Given a pair of entities, calculate the absolute distance between them.
+     * Given a pair of Positions, calculate the absolute distance between them.
      * @param here
      * @param there
      * @return double
