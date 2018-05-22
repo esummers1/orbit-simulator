@@ -8,6 +8,11 @@ import entities.Body;
 import entities.Entity;
 import physics.Physics;
 
+/**
+ * Class containing the input arguments for the simulation and the main method.
+ * 
+ * @author Eddie Summers
+ */
 public class Launcher {
     
     public static void main(String[] args) {

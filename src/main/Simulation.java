@@ -4,9 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import entities.Entity;
-import physics.Force;
 import physics.Physics;
+import physics.XYVector;
 
+/**
+ * Class responsible for governing the flow of the simulation.
+ * 
+ * @author Eddie Summers
+ */
 public class Simulation {
     
     private List<Entity> entities;
@@ -96,7 +101,7 @@ public class Simulation {
         
         // Calculate gravity 
         for (Entity entity : entities) {
-            Force resultantGravity = getResultantGravity(entity);
+            XYVector resultantGravity = getResultantGravity(entity);
             Physics.applyForce(entity, resultantGravity);
         }
         
@@ -113,12 +118,12 @@ public class Simulation {
      * Return a single Force describing the gravitational pull from all other
      * Entities on the passed Entity.
      * @param entity
-     * @return Force
+     * @return XYVector
      */
-    private Force getResultantGravity(Entity entity) {
+    private XYVector getResultantGravity(Entity entity) {
         
         List<Entity> otherEntities = getAllOtherEntities(entity);
-        List<Force> gravitationalForces = 
+        List<XYVector> gravitationalForces = 
                 getGravitationalForces(entity, otherEntities);
         
         return Physics.resolveForces(gravitationalForces);        
@@ -129,12 +134,12 @@ public class Simulation {
      * Entities on a single Entity.
      * @param entity
      * @param otherEntities
-     * @return List<Force>
+     * @return List<XYVector>
      */
-    private List<Force> getGravitationalForces(Entity entity, 
+    private List<XYVector> getGravitationalForces(Entity entity, 
             List<Entity> otherEntities) {
         
-        List<Force> gravitationalForces = new ArrayList<>();
+        List<XYVector> gravitationalForces = new ArrayList<>();
         
         for (Entity otherEntity: otherEntities) {
             gravitationalForces.add(

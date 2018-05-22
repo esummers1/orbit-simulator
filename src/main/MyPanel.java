@@ -10,6 +10,11 @@ import javax.swing.JPanel;
 
 import entities.Entity;
 
+/**
+ * Class responsible for rendering the simulation.
+ * 
+ * @author Eddie Summers
+ */
 public class MyPanel extends JPanel {
     
     private static final long serialVersionUID = 1L;

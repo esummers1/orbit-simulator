@@ -1,5 +1,10 @@
 package physics;
 
+/**
+ * Class representing a vector composed of a magnitude and a bearing.
+ * 
+ * @author Eddie Summers
+ */
 public class BearingVector {
     
     private double magnitude;

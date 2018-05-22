@@ -2,6 +2,11 @@ package entities;
 
 import java.awt.Color;
 
+/**
+ * Class representing the unchanging attributes of a simulation entity.
+ * 
+ * @author Eddie Summers
+ */
 public class Body {
     
     private String name;

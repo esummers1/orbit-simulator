@@ -1,11 +1,16 @@
 package physics;
 
-public class Force {
+/**
+ * Class representing a vector composed of x- and y- components.
+ * 
+ * @author Eddie Summers
+ */
+public class XYVector {
     
     private double x;
     private double y;
     
-    public Force(double x, double y) {
+    public XYVector(double x, double y) {
         this.x = x;
         this.y = y;
     }

@@ -7,6 +7,11 @@ import main.Display;
 import main.Simulation;
 import physics.Position;
 
+/**
+ * Class representing physical objects in the simulation (e.g. planets).
+ * 
+ * @author Eddie Summers
+ */
 public class Entity {
     
     private Body body;

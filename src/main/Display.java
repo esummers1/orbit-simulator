@@ -2,6 +2,11 @@ package main;
 
 import javax.swing.JFrame;
 
+/**
+ * Class, responsible for creating the simulation window.
+ * 
+ * @author Eddie Summers
+ */
 public class Display {
     
     private JFrame frame;

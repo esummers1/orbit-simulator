@@ -16,5 +16,7 @@
    -> gets worse as entity display scale factor increases
      --> review algebra, may need to introduce this factor into scaled position
  
+ - Refactor Body to be an inner class of Entity?
+ 
  - BIG FEATURE: collision mechanics for bodies that come within radius
    -> Objects combine, use combined mass and 4/3 pi ^3 to calc new radius

@@ -1,5 +1,10 @@
 package physics;
 
+/**
+ * Class representing a location in the simulated worldspace.
+ * 
+ * @author Eddie Summers
+ */
 public class Position {
     
     private double x;

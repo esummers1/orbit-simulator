@@ -6,6 +6,11 @@ import entities.Body;
 import entities.Entity;
 import main.Simulation;
 
+/**
+ * Class containing static physics utility methods.
+ * 
+ * @author Eddie Summers
+ */
 public abstract class Physics {
     
  // Universal gravitational constant
@@ -15,13 +20,13 @@ public abstract class Physics {
      * Given a list of Force objects, resolve them into a single resultant
      * Force.
      * @param forces
-     * @return Force
+     * @return XYVector
      */
-    public static Force resolveForces(List<Force> forces) {
+    public static XYVector resolveForces(List<XYVector> forces) {
         
-        Force resultantForce = new Force(0, 0);
+        XYVector resultantForce = new XYVector(0, 0);
         
-        for (Force force : forces) {
+        for (XYVector force : forces) {
             double x = resultantForce.getX();
             double y = resultantForce.getY();
             
@@ -37,9 +42,9 @@ public abstract class Physics {
      * thisEntity.
      * @param thisEntity
      * @param otherEntity
-     * @return Force
+     * @return XYVector
      */
-    public static Force computeGravitationalForce(Entity thisEntity, 
+    public static XYVector computeGravitationalForce(Entity thisEntity, 
             Entity otherEntity) {
         
         double gravity = getGravityMagnitude(thisEntity, otherEntity);
@@ -52,11 +57,11 @@ public abstract class Physics {
      * Given a vector in the form of a magnitude and a bearing, return a Force 
      * object containing the x- and y- components of that vector.
      * @param vector
-     * @return Force
+     * @return XYVector
      */
-    public static Force convertToForceVector(BearingVector vector) {
+    public static XYVector convertToForceVector(BearingVector vector) {
         
-        return new Force(
+        return new XYVector(
                 vector.getMagnitude() * Math.sin(vector.getBearing()), 
                 vector.getMagnitude() * -1 * Math.cos(vector.getBearing()));
     }
@@ -150,7 +155,7 @@ public abstract class Physics {
      * @param entity
      * @param force
      */
-    public static void applyForce(Entity entity, Force force) {
+    public static void applyForce(Entity entity, XYVector force) {
         
         double mass = entity.getBody().getMass();
         
