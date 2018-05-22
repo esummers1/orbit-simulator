@@ -85,8 +85,7 @@ public class Simulation {
             long deltaTime = endTime - startTime;
             
             try {
-                Thread.sleep(
-                        (long) ((1000 / FRAME_RATE) - deltaTime));
+                Thread.sleep((long) ((1000 / FRAME_RATE) - deltaTime));
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
