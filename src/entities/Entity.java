@@ -14,6 +14,38 @@ import physics.Position;
  */
 public class Entity {
     
+    /**
+     * Inner class representing the properties needed for the panel component
+     * to render the outer Entity.
+     * 
+     * @author Eddie Summers
+     */
+    public class EntityForRendering {
+        
+        private int x;
+        private int y;
+        private int diameter;
+        
+        public EntityForRendering(int x, int y, int diameter) {
+            this.x = x;
+            this.y = y;
+            this.diameter = diameter;
+        }
+        
+        public int getX() {
+            return x;
+        }
+        
+        public int getY() {
+            return y;
+        }
+        
+        public int getDiameter() {
+            return diameter;
+        }
+        
+    }
+    
     private Body body;
     private double xVel;
     private double yVel;
@@ -30,6 +62,14 @@ public class Entity {
         this.setXVel(xVel);
         this.setYVel(yVel);
         this.setPosition(new Position(x, y));
+    }
+    
+    public Body getBody() {
+        return body;
+    }
+
+    public void setBody(Body body) {
+        this.body = body;
     }
 
     public double getXVel() {
@@ -61,14 +101,16 @@ public class Entity {
         this.position.setY(y);
     }
     
-    public void draw(Graphics2D g) {
+    /**
+     * Produce an EntityForRendering object representing the attributes of the
+     * Entity required for it to be rendered this frame by the panel component.
+     * 
+     * This takes into account the parameters of the entity, the scaling factors
+     * and the offset supplied by the Camera class.
+     * @return EntityForRendering
+     */
+    private EntityForRendering calculateEntityForRendering() {
         
-        /**
-         * Calculate on-screen position of Entity for rendering. This takes into
-         * account the current scaling as well as the offset calculated from the
-         * position of the system's centre of mass at this moment.
-         * TODO: clean up this garbage
-         */
         double scaleFactor = Simulation.getSizedScaleFactor();
         double windowSize = Display.WINDOW_SIZE * scaleFactor;
         
@@ -81,27 +123,34 @@ public class Entity {
         double unscaledX = baseX + (windowSize / 2 - adjustX);
         double unscaledY = baseY + (windowSize / 2 - adjustY);
         
-        double scaledX = unscaledX / scaleFactor;
-        double scaledY = unscaledY / scaleFactor;
-        
-        double scaledDiameter = 
-                (body.getRadius() * 2 * Simulation.getEntityDisplayFactor()) / 
+        double scaledRadius = 
+                body.getRadius() * 
+                Simulation.getEntityDisplayFactor() / 
                 Simulation.getSizedScaleFactor();
+        
+        int scaledX = (int) (unscaledX / scaleFactor);
+        int scaledY = (int) (unscaledY / scaleFactor);
+        
+        int scaledDiameter = (int) scaledRadius * 2;
+        
+        return new EntityForRendering(scaledX, scaledY, scaledDiameter);
+    }
+    
+    /**
+     * Draw method for the panel component to use when rendering simulation
+     * objects.
+     * @param g
+     */
+    public void draw(Graphics2D g) {
+        
+        EntityForRendering entityForRendering = calculateEntityForRendering();
         
         g.setColor(body.getColour());
         g.fillOval(
-                (int) scaledX, 
-                (int) scaledY,
-                (int) scaledDiameter,
-                (int) scaledDiameter);
+                (int) entityForRendering.getX(), 
+                (int) entityForRendering.getY(),
+                (int) entityForRendering.getDiameter(),
+                (int) entityForRendering.getDiameter());
     }
 
-    public Body getBody() {
-        return body;
-    }
-
-    public void setBody(Body body) {
-        this.body = body;
-    }
-    
 }

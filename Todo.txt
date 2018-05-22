@@ -10,8 +10,6 @@
  - Review timeStep calculation logic - should simulation speed up as framerate
    is increased...? (it doesn't)
 
- - Refactor hideous camera offset calculation code in Entity.draw()
- 
  - Bug: something is making bodies get rendered off-centre
    -> gets worse as entity display scale factor increases
      --> review algebra, may need to introduce this factor into scaled position
