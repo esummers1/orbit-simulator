@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import entities.Entity;
-import physics.Constants;
 import physics.Force;
 import physics.Physics;
 
@@ -13,20 +12,28 @@ public class Simulation {
     private List<Entity> entities;
     private Display display;
     
+    // Steps per second
+    private static final int FRAME_RATE = 300;
+    
     // Number of simulated seconds that pass per simulation step
     private static double timeStep;
     
     // Spatial scale factor with window size taken into account, i.e. m/px
     private static double sizedScaleFactor;
     
+    // Body rendering scale factor
+    private static double entityDisplayFactor;
+    
     public Simulation(
             List<Entity> entities, 
             double timeAcceleration,
-            double scaleFactor) {
+            double scaleFactor,
+            double entityDisplayFactor) {
         
         this.entities = entities;
-        Simulation.timeStep = timeAcceleration / Constants.FRAME_RATE;
-        Simulation.sizedScaleFactor = scaleFactor / Constants.WINDOW_SIZE;
+        Simulation.timeStep = timeAcceleration / FRAME_RATE;
+        Simulation.sizedScaleFactor = scaleFactor / Display.WINDOW_SIZE;
+        Simulation.entityDisplayFactor = entityDisplayFactor;
         display = new Display(this);
     }
     
@@ -52,6 +59,10 @@ public class Simulation {
         return sizedScaleFactor;
     }
     
+    public static double getEntityDisplayFactor() {
+        return entityDisplayFactor;
+    }
+    
     /**
      * Main simulation loop.
      */
@@ -70,7 +81,7 @@ public class Simulation {
             
             try {
                 Thread.sleep(
-                        (long) ((1000 / Constants.FRAME_RATE) - deltaTime));
+                        (long) ((1000 / FRAME_RATE) - deltaTime));
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

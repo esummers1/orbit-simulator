@@ -2,13 +2,14 @@ package main;
 
 import javax.swing.JFrame;
 
-import physics.Constants;
-
 public class Display {
     
     private JFrame frame;
     private MyPanel panel;
     private String names;
+    
+    // Window will be a square this many pixels per side.
+    public static final int WINDOW_SIZE = 950;
     
     public Display(Simulation sim) {
         
@@ -23,7 +24,7 @@ public class Display {
             } 
         }
         
-        panel = new MyPanel(Constants.WINDOW_SIZE, Constants.WINDOW_SIZE);
+        panel = new MyPanel(WINDOW_SIZE, WINDOW_SIZE);
         frame = createFrame(panel);
         frame.setVisible(true);
     }

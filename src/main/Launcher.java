@@ -6,7 +6,6 @@ import java.util.List;
 
 import entities.Body;
 import entities.Entity;
-import physics.Constants;
 import physics.Physics;
 
 public class Launcher {
@@ -45,9 +44,19 @@ public class Launcher {
         // Define simulation display factor
         double scaleFactor = Math.pow(10, 8.5);
         
+        /**
+         *  Define how many times larger than their actual scale bodies will be
+         *  drawn
+         */
+        double entityDisplayFactor = 1;
+        
         // Begin simulation
-        Simulation sim = 
-                new Simulation(entities, timeAcceleration, scaleFactor);
+        Simulation sim = new Simulation(
+                entities, 
+                timeAcceleration, 
+                scaleFactor,
+                entityDisplayFactor);
+        
         sim.run();
         
     }

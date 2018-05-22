@@ -3,8 +3,8 @@ package entities;
 import java.awt.Graphics2D;
 
 import main.Camera;
+import main.Display;
 import main.Simulation;
-import physics.Constants;
 import physics.Position;
 
 public class Entity {
@@ -65,7 +65,7 @@ public class Entity {
          * TODO: clean up this garbage
          */
         double scaleFactor = Simulation.getSizedScaleFactor();
-        double windowSize = Constants.WINDOW_SIZE * scaleFactor;
+        double windowSize = Display.WINDOW_SIZE * scaleFactor;
         
         double baseX = position.getX() + body.getRadius();
         double baseY = position.getY() + body.getRadius();
@@ -80,7 +80,7 @@ public class Entity {
         double scaledY = unscaledY / scaleFactor;
         
         double scaledDiameter = 
-                (body.getRadius() * 2 * Constants.ENTITY_DISPLAY_SCALE_FACTOR) / 
+                (body.getRadius() * 2 * Simulation.getEntityDisplayFactor()) / 
                 Simulation.getSizedScaleFactor();
         
         g.setColor(body.getColour());

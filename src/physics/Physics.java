@@ -8,6 +8,9 @@ import main.Simulation;
 
 public abstract class Physics {
     
+ // Universal gravitational constant
+    public static final double BIG_G = 6.674 * Math.pow(10, -11);
+    
     /**
      * Given a list of Force objects, resolve them into a single resultant
      * Force.
@@ -93,7 +96,7 @@ public abstract class Physics {
     public static double getGravityMagnitude(Entity thisEntity, 
             Entity otherEntity) {
         
-        return Constants.BIG_G * 
+        return BIG_G * 
                 thisEntity.getBody().getMass() * 
                 otherEntity.getBody().getMass() /
                 Math.pow(getDistance(thisEntity, otherEntity), 2);
