@@ -6,8 +6,7 @@ import entities.Entity;
 import main.Simulation;
 
 /**
- * Class containing physics utility methods (involving forces, accelerations and
- * vector maths).
+ * Class containing physics utility methods.
  * 
  * @author Eddie Summers
  */
@@ -15,35 +14,6 @@ public abstract class Physics {
     
     // Universal gravitational constant
     public static final double BIG_G = 6.674 * Math.pow(10, -11);
-    
-    /**
-     * Given a list of XYVectors, resolve them into a single resultant XYVector.
-     * @param vectors
-     * @return XYVector
-     */
-    public static XYVector resolveVectors(List<XYVector> vectors) {
-        
-        XYVector resultantVector = new XYVector(0, 0);
-        
-        for (XYVector vector : vectors) {
-            resultantVector.setX(resultantVector.getX() + vector.getX());
-            resultantVector.setY(resultantVector.getY() + vector.getY());
-        }
-        
-        return resultantVector;
-    }
-    
-    /**
-     * Convert a BearingVector to an XYVector.
-     * @param vector
-     * @return XYVector
-     */
-    public static XYVector convertToXYVector(BearingVector vector) {
-        
-        return new XYVector(
-                vector.getMagnitude() * Math.sin(vector.getBearing()), 
-                vector.getMagnitude() * -1 * Math.cos(vector.getBearing()));
-    }
     
     /**
      * Calculate the gravitational attraction Force from otherEntity to
@@ -56,9 +26,10 @@ public abstract class Physics {
             Entity otherEntity) {
         
         double gravity = getGravityMagnitude(thisEntity, otherEntity);
-        double bearing = Geometry.getBearing(thisEntity, otherEntity);
+        double bearing = Geometry.calculateBearing(
+                thisEntity.getPosition(), otherEntity.getPosition());
         
-        return convertToXYVector(new BearingVector(gravity, bearing));        
+        return Geometry.convertToXYVector(new BearingVector(gravity, bearing));        
     }
     
     /**
@@ -71,10 +42,13 @@ public abstract class Physics {
     public static double getGravityMagnitude(Entity thisEntity, 
             Entity otherEntity) {
         
+        double distance = Geometry.getDistance(
+                thisEntity.getPosition(), otherEntity.getPosition());
+        
         return BIG_G * 
                 thisEntity.getBody().getMass() * 
                 otherEntity.getBody().getMass() /
-                Math.pow(Geometry.getDistance(thisEntity, otherEntity), 2);
+                Math.pow(distance, 2);
     }
     
     /**

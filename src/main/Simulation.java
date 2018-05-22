@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import entities.Entity;
+import physics.Geometry;
 import physics.Physics;
 import physics.XYVector;
 
@@ -125,7 +126,7 @@ public class Simulation {
         List<XYVector> gravitationalForces = 
                 getGravitationalForces(entity, otherEntities);
         
-        return Physics.resolveVectors(gravitationalForces);        
+        return Geometry.resolveVectors(gravitationalForces);        
     }
     
     /**
