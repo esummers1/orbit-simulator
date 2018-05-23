@@ -32,17 +32,17 @@ public abstract class Geometry {
      */
     public static double calculateBearing(Position here, Position there) {
         
-        double theta = Math.PI + Math.atan(
-                (there.getX() - here.getX()) /
-                (here.getY() - there.getY()));
+        double deltaX = there.getX() - here.getX();
+        double deltaY = there.getY() - here.getY();
         
-        // Compensate for ambiguity in tangent function
-        if (here.getY() > there.getX()) {
-           theta += Math.PI;
+        double theta = Math.PI / 2 + Math.atan2(deltaY, deltaX);
+        
+        // Not strictly necessary - makes testing clearer
+        if (theta < 0) {
+            theta += Math.PI * 2;
         }
         
-        // Resolve to bearing below 2 PI if it's gone all the way round
-        return theta % (2 * Math.PI);
+        return theta;
     }
 
     /**

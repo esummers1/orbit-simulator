@@ -27,21 +27,81 @@ public class GeometryTest {
     @Test
     public void testCalculateBearing_UpperRightQuadrant() {
         
+        // GIVEN I have two positions such that the latter is at a bearing of
+        // 45 degrees from the first
+        Position here = new Position(0, 0);
+        Position there = new Position(1, -1);
+        
+        // WHEN I calculate the bearing from the former to the latter
+        double bearing = Geometry.calculateBearing(here, there);
+        bearing *= (180 / Math.PI);
+        
+        // THEN I receive approx. 45 degrees
+        assert(bearing > 44 && bearing < 46);
     }
     
     @Test
     public void testCalculateBearing_LowerRightQuadrant() {
         
+        // GIVEN I have two positions such that the latter is at a bearing of
+        // 135 degrees from the first
+        Position here = new Position(0, 0);
+        Position there = new Position(1, 1);
+        
+        // WHEN I calculate the bearing from the former to the latter
+        double bearing = Geometry.calculateBearing(here, there);
+        bearing *= (180 / Math.PI);
+        
+        // THEN I receive approx. 135 degrees
+        assert(bearing > 134 && bearing < 136);
     }
     
     @Test
     public void testCalculateBearing_LowerLeftQuadrant() {
         
+        // GIVEN I have two positions such that the latter is at a bearing of
+        // 225 degrees from the first
+        Position here = new Position(0, 0);
+        Position there = new Position(-1, 1);
+        
+        // WHEN I calculate the bearing from the former to the latter
+        double bearing = Geometry.calculateBearing(here, there);
+        bearing *= (180 / Math.PI);
+        
+        // THEN I receive approx. 225 degrees
+        assert(bearing > 224 && bearing < 226);
     }
     
     @Test
     public void testCalculateBearing_UpperLeftQuadrant() {
         
+        // GIVEN I have two positions such that the latter is at a bearing of
+        // 315 degrees from the first
+        Position here = new Position(0, 0);
+        Position there = new Position(-1, -1);
+        
+        // WHEN I calculate the bearing from the former to the latter
+        double bearing = Geometry.calculateBearing(here, there);
+        bearing *= (180 / Math.PI);
+        
+        // THEN I receive approx. 315 degrees
+        assert(bearing > 314 && bearing < 316);
+    }
+    
+    @Test
+    public void testCalculateBearing_DirectlyRight() {
+        
+        // GIVEN I have two positions such that the latter is at a bearing of
+        // 90 degrees from the first
+        Position here = new Position(0, 0);
+        Position there = new Position(1, 0);
+        
+        // WHEN I calculate the bearing from the former to the latter
+        double bearing = Geometry.calculateBearing(here, there);
+        bearing *= (180 / Math.PI);
+        
+        // THEN I receive approx. 90 degrees
+        assert(bearing > 89 && bearing < 91);
     }
     
     @Test
