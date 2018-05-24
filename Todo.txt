@@ -2,10 +2,7 @@
 || TODO
 ================================================================================
 
- - Finish unit tests; figure out strange orbit behaviours
-   -> also test against real-world calculations
-   -> there is a momentary inflexion that occurs at the cardinal directions
-     --> maybe to do with tangent function asymptotes?
+ - Finish unit tests
 
  - Bug: something is making bodies get rendered off-centre
    -> gets worse as entity display scale factor increases
