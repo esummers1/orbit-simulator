@@ -1,6 +1,10 @@
 package main;
 
+import java.util.List;
+
 import javax.swing.JFrame;
+
+import entities.Entity;
 
 /**
  * Class, responsible for creating the simulation window.
@@ -16,7 +20,7 @@ public class Display {
     // Window will be a square this many pixels per side.
     public static final int WINDOW_SIZE = 950;
     
-    public Display(Simulation sim) {
+    public Display(Simulation sim, List<Entity> entities) {
         
         names = "";
         
@@ -29,7 +33,7 @@ public class Display {
             } 
         }
         
-        panel = new MyPanel(WINDOW_SIZE, WINDOW_SIZE);
+        panel = new MyPanel(WINDOW_SIZE, WINDOW_SIZE, entities);
         frame = createFrame(panel);
         frame.setVisible(true);
     }

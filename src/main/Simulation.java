@@ -40,7 +40,7 @@ public class Simulation {
         Simulation.timeStep = timeAcceleration / FRAME_RATE;
         Simulation.sizedScaleFactor = scaleFactor / Display.WINDOW_SIZE;
         Simulation.entityDisplayFactor = entityDisplayFactor;
-        display = new Display(this);
+        display = new Display(this, entities);
     }
     
     /**
@@ -82,11 +82,8 @@ public class Simulation {
             render();
             
             // Wait for next step to begin
-            long endTime = System.currentTimeMillis();
-            long deltaTime = endTime - startTime;
-            
             try {
-                Thread.sleep((long) ((1000 / FRAME_RATE) - deltaTime));
+                Thread.sleep((long) (1000 / FRAME_RATE));
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -171,7 +168,6 @@ public class Simulation {
      * Render results of this step.
      */
     private void render() {
-        display.getPanel().setObjects(entities);
         display.getPanel().repaint();
     }
     

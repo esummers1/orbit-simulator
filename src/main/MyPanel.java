@@ -21,9 +21,10 @@ public class MyPanel extends JPanel {
 
     private List<Entity> entities;
 
-    public MyPanel(int width, int height) {
+    public MyPanel(int width, int height, List<Entity> entities) {
         setPreferredSize(new Dimension(width, height));
         this.setBackground(Color.BLACK);
+        this.entities = entities;
     }
     
     @Override
@@ -37,11 +38,4 @@ public class MyPanel extends JPanel {
         }
     }
     
-    /**
-     * Accept a list of Entities to draw.
-     * @param entities
-     */
-    public void setObjects(List<Entity> entities) {
-        this.entities = entities;
-    }
 }

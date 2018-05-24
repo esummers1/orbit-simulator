@@ -1,12 +1,29 @@
 ================================================================================
-|| TODO
+|| Tasks
 ================================================================================
 
  - Finish unit tests
-
+ 
  - Bug: something is making bodies get rendered off-centre
    -> gets worse as entity display scale factor increases
      --> review algebra, may need to introduce this factor into scaled position
  
- - BIG FEATURE: collision mechanics for bodies that come within radius
+ - Separate render loop from physics loop, e.g. render separately at 60 fps
+ 
+ - Move entity rendering logic into an e.g. EntityRenderer class
+
+================================================================================
+|| Feature Ideas
+================================================================================
+
+ - Collision mechanics for bodies that come within radius
    -> Objects combine, use combined mass and 4/3 pi ^3 to calc new radius
+ 
+ - Highlights or annotations for bodies so they remain visible when very small
+ 
+ - Mousing over an area of the simulation brings up a zoomed-in overlay window
+ 
+ - Camera view scaling mechanics
+   -> Could use escape velocity calc to exclude bodies on escape trajectories
+      from the CofM of all other bodies from the calculation
+   -> Scale based on the largest separation of non-excluded bodies
