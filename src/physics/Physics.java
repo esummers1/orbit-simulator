@@ -1,7 +1,10 @@
 package physics;
 
+import java.awt.Color;
+import java.util.ArrayList;
 import java.util.List;
 
+import entities.Body;
 import entities.Entity;
 import main.Simulation;
 
@@ -105,6 +108,97 @@ public abstract class Physics {
         
         entity.setXVel(entity.getXVel() + xAcc * Simulation.getTimeStep());
         entity.setYVel(entity.getYVel() + yAcc * Simulation.getTimeStep());
+    }
+    
+    /**
+     * Checks if two entities have come closer together than the sum of their
+     * radii.
+     * @param thisEntity
+     * @param otherEntity
+     * @return boolean
+     */
+    public static boolean detectCollision(Entity thisEntity, 
+            Entity otherEntity) {
+        
+        double separation = Geometry.getDistance(
+                thisEntity.getPosition(), 
+                otherEntity.getPosition());
+        
+        double radii = 
+                thisEntity.getBody().getRadius() + 
+                otherEntity.getBody().getRadius();
+        
+        if (separation < radii) {
+            return true;
+        }
+        
+        return false;
+    }
+    
+    /**
+     * Merge two Body objects, preserving the name and colour of the larger.
+     * @param thisBody
+     * @param otherBody
+     * @return Body
+     */
+    public static Body mergeBodies(Body thisBody, Body otherBody) {
+        
+        double combinedVolume = 
+                Geometry.calculateVolumeFromRadius(thisBody.getRadius()) +
+                Geometry.calculateVolumeFromRadius(otherBody.getRadius());
+        
+        double newRadius = Geometry.calculateRadiusFromVolume(combinedVolume);
+        double newMass = thisBody.getMass() + otherBody.getMass();
+        
+        String newName;
+        Color newColour;
+        
+        if (thisBody.getMass() > otherBody.getMass()) {
+            newName = thisBody.getName();
+            newColour = thisBody.getColour();
+        } else {
+            newName = otherBody.getName();
+            newColour = otherBody.getColour();
+        }
+        
+        return new Body(newName, newMass, newRadius, newColour);
+    }
+    
+    /**
+     * Produce a single velocity vector for a pair of entities that are merging,
+     * preserving total linear momentum.
+     * @param thisEntity
+     * @param otherEntity
+     * @return XYVector
+     */
+    public static XYVector mergeVelocities(Entity thisEntity, 
+            Entity otherEntity) {
+        
+        double totalMass = 
+                thisEntity.getBody().getMass() + 
+                otherEntity.getBody().getMass();
+        
+        List<XYVector> momenta = new ArrayList<>();
+        momenta.add(calculateMomentum(thisEntity));
+        momenta.add(calculateMomentum(otherEntity));
+        
+        XYVector resultantMomentum = Geometry.resolveVectors(momenta);
+        
+        return new XYVector(
+                resultantMomentum.getX() / totalMass,
+                resultantMomentum.getY() / totalMass);
+    }
+    
+    /**
+     * Calculate the linear momentum of an Entity, expressed as an XYVector
+     * @param entity
+     * @return XYVector
+     */
+    public static XYVector calculateMomentum(Entity entity) {
+        
+        double mass = entity.getBody().getMass();
+        
+        return new XYVector(entity.getXVel() * mass, entity.getYVel() * mass);
     }
     
 }

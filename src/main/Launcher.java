@@ -36,13 +36,8 @@ public class Launcher {
         
         // Create simulation entities
         List<Entity> entities = new ArrayList<>();
-        
-        Entity earth = new Entity(earthBody, 0, 0, 0, 0);
-        entities.add(earth);
-        
-        Entity moon = new Entity(
-                moonBody, 1.02 * Math.pow(10, 3), 0, 0, -4 * Math.pow(10, 8));
-        entities.add(moon);
+        entities.add(new Entity(earthBody, 0, 0, 0, 0));
+        entities.add(new Entity(marsBody, 0, 0, -4 * Math.pow(10, 8), 0));
         
         // Update camera with entity starting positions
         Camera.setCentreOfFrame(Physics.calculateBarycentre(entities));

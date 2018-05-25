@@ -1,11 +1,14 @@
 package main;
 
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 
+import entities.Body;
 import entities.Entity;
 import physics.Geometry;
 import physics.Physics;
+import physics.Position;
 import physics.XYVector;
 
 /**
@@ -75,7 +78,6 @@ public class Simulation {
     public void run() {
         
         while(true) {
-            long startTime = System.currentTimeMillis();
             
             // Do actual simulation work
             updatePhysics();
@@ -107,8 +109,61 @@ public class Simulation {
             Physics.projectEntity(entity);
         }
         
+        // Detect and handle collisions if they have occurred
+        for (Entity entity : entities) {
+            handleCollisions(entity);
+        }
+        
         // Update camera with new situation
         Camera.setCentreOfFrame(Physics.calculateBarycentre(entities));
+    }
+    
+    /**
+     * Detect and handle collisions for the given Entity.
+     * @param entity
+     */
+    private void handleCollisions(Entity entity) {
+        
+        List<Entity> otherEntities = getAllOtherEntities(entity);
+        
+        for (Entity otherEntity : otherEntities) {
+            if (Physics.detectCollision(entity, otherEntity)) {
+                Entity newEntity = mergeEntities(entity, otherEntity);
+                
+                entities.add(newEntity);
+                entities.remove(entity);
+                entities.remove(otherEntity);
+                
+                // Update list of entities for rendering
+                display.getPanel().updateEntityList(this.entities);
+            }
+        }
+    }
+    
+    /**
+     * Merge two Entities.
+     * @param thisEntity
+     * @param otherEntity
+     * @return Entity
+     */
+    private Entity mergeEntities(Entity thisEntity, Entity otherEntity) {
+        
+        Body newBody = Physics.mergeBodies(
+                thisEntity.getBody(), otherEntity.getBody());
+        
+        XYVector newVelocity = Physics.mergeVelocities(thisEntity, otherEntity);
+        
+        List<Entity> entities = new ArrayList<>();
+        entities.add(thisEntity);
+        entities.add(otherEntity);
+        Position newPosition = Physics.calculateBarycentre(entities);
+        
+        return new Entity(
+                newBody, 
+                newVelocity.getX(), 
+                newVelocity.getY(),
+                newPosition.getX(),
+                newPosition.getY());
     }
     
     /**
@@ -155,7 +210,7 @@ public class Simulation {
         
         List<Entity> otherEntities = new ArrayList<>();
         
-        for (Entity potentialEntity : entities) {
+        for (Entity potentialEntity : this.entities) {
             if (!potentialEntity.equals(entity)) {
                 otherEntities.add(potentialEntity);
             }
