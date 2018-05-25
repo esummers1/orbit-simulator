@@ -80,7 +80,7 @@ public abstract class Geometry {
      * @return double
      */
     public static double calculateVolumeFromRadius(double radius) {
-        return (4/3 * Math.PI * Math.pow(radius, 3));
+        return ((4f / 3f) * Math.PI * Math.pow(radius, 3));
     }
     
     /**
@@ -89,7 +89,7 @@ public abstract class Geometry {
      * @return double
      */
     public static double calculateRadiusFromVolume(double volume) {
-        return Math.pow((4 * Math.PI) / (3 * volume), 1/3);
+        return Math.pow((4f * Math.PI) / (3f * volume), 1f/3f);
     }
     
 }
