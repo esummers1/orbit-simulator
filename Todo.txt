@@ -13,7 +13,7 @@
  - Separate render loop from physics loop, e.g. render separately at 60 fps
  
  - Move entity rendering logic into an e.g. EntityRenderer class
-
+ 
 ================================================================================
 || Feature Ideas
 ================================================================================

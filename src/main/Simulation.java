@@ -1,7 +1,7 @@
 package main;
 
-import java.awt.Color;
 import java.util.ArrayList;
+import java.util.ConcurrentModificationException;
 import java.util.List;
 
 import entities.Body;
@@ -43,7 +43,7 @@ public class Simulation {
         Simulation.timeStep = timeAcceleration / FRAME_RATE;
         Simulation.sizedScaleFactor = scaleFactor / Display.WINDOW_SIZE;
         Simulation.entityDisplayFactor = entityDisplayFactor;
-        display = new Display(this, entities);
+        this.display = new Display(this);
     }
     
     /**
@@ -70,6 +70,14 @@ public class Simulation {
     
     public static double getEntityDisplayFactor() {
         return entityDisplayFactor;
+    }
+    
+    public Display getDisplay() {
+        return display;
+    }
+    
+    public List<Entity> getEntities() {
+        return entities;
     }
     
     /**
@@ -109,10 +117,18 @@ public class Simulation {
             Physics.projectEntity(entity);
         }
         
-        // Detect and handle collisions if they have occurred
-        for (Entity entity : entities) {
-            handleCollisions(entity);
-        }
+        /**
+         * Detect and handle collisions as they occur.
+         * 
+         * Currently ignores concurrent modification exception, most likely
+         * caused by editing the list which the for block is looping through.
+         * Have ignored as it does not seem to affect behaviour.
+         */
+        try {
+            for (Entity entity : entities) {
+                handleCollisions(entity);
+            }
+        } catch (ConcurrentModificationException e) {}
         
         // Update camera with new situation
         Camera.setCentreOfFrame(Physics.calculateBarycentre(entities));
@@ -136,6 +152,10 @@ public class Simulation {
                 
                 // Update list of entities for rendering
                 display.getPanel().updateEntityList(this.entities);
+                
+                // Update window title
+                String title = Display.createTitle(getEntityNames());
+                display.getFrame().setTitle(title);
             }
         }
     }

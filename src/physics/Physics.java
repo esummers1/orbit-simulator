@@ -150,10 +150,10 @@ public abstract class Physics {
         Color newColour;
         
         if (thisBody.getMass() > otherBody.getMass()) {
-            newName = thisBody.getName();
+            newName = thisBody.getName() + " + " + otherBody.getName();
             newColour = thisBody.getColour();
         } else {
-            newName = otherBody.getName();
+            newName = otherBody.getName() + " + " + thisBody.getName();
             newColour = otherBody.getColour();
         }
         
