@@ -38,4 +38,11 @@ public class MyPanel extends JPanel {
         }
     }
     
+    /**
+     * Replace list of entities for rendering.
+     * @param entities
+     */
+    public void updateEntityList(List<Entity> entities) {
+        this.entities = entities;
+    }
 }

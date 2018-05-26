@@ -131,5 +131,27 @@ public class GeometryTest {
         // THEN the resulting XYVector is (1, 0), allowing for rounding errors
         assert(xyVector.getX() == 1 && Math.abs(xyVector.getY()) < 0.000001);
     }
+    
+    @Test
+    public void testCalculateVolumeFromRadius() {
+        
+        // GIVEN a radius of 2
+        // WHEN I calculate the volume of a sphere of this radius
+        double volume = Geometry.calculateVolumeFromRadius(2);
+        
+        // THEN the volume I receive is approximately 33.51
+        assert(Math.abs(volume - 33.51) < 0.01);
+    }
+    
+    @Test
+    public void testCalculateRadiusFromVolume() {
+        
+        // GIVEN a volume of 33.51
+        // WHEN I calculate the radius of a sphere of this volume
+        double radius = Geometry.calculateRadiusFromVolume(33.51);
+        
+        // THEN the radius I receive is approximately 2
+        assert(Math.abs(radius - 2) < 0.01);
+    }
 
 }

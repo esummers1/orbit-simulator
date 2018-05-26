@@ -1,6 +1,5 @@
 package test;
 
-import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -117,6 +116,37 @@ public class PhysicsTest {
         // to the time step.
         assert(entity.getXVel() == Simulation.getTimeStep());
         assert(entity.getYVel() == Simulation.getTimeStep());
+    }
+    
+    @Test
+    public void testDetectCollision_NoCollision() {
+    }
+    
+    @Test
+    public void testDetectCollision_WhenCollided() {
+    }
+    
+    @Test
+    public void testMergeBodies() {
+    }
+    
+    @Test
+    public void testCalculateRadiusOfMergedBodies() {
+        
+        // GIVEN I have two Bodies of radius 1
+        
+        // WHEN I calculate the radius they would have when merged
+        
+        // THEN I receive 
+        
+    }
+    
+    @Test
+    public void testMergeVelocities() {
+    }
+    
+    @Test
+    public void testCalculateMomentum() {
     }
     
 }

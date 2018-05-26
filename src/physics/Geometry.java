@@ -74,4 +74,22 @@ public abstract class Geometry {
                 vector.getMagnitude() * -1 * Math.cos(vector.getBearing()));
     }
     
+    /**
+     * Calculate the volume of a sphere from its radius.
+     * @param radius
+     * @return double
+     */
+    public static double calculateVolumeFromRadius(double radius) {
+        return ((4f / 3f) * Math.PI * Math.pow(radius, 3));
+    }
+    
+    /**
+     * Calculate the radius of a sphere from its volume.
+     * @param volume
+     * @return double
+     */
+    public static double calculateRadiusFromVolume(double volume) {
+        return Math.pow((3f * volume) / (4f * Math.PI), 1f/3f);
+    }
+    
 }
