@@ -37,16 +37,19 @@ public class Launcher {
         // Create simulation entities
         List<Entity> entities = new ArrayList<>();
         entities.add(new Entity(earthBody, 0, 0, 0, 0));
-        entities.add(new Entity(marsBody, 0, 0, -4 * Math.pow(10, 8), 0));
+        //entities.add(new Entity(marsBody, 
+          //      0, -1 * Math.pow(10, 3), -4 * Math.pow(10, 8), 0));
+        entities.add(new Entity(venusBody,
+                0, 1 * Math.pow(10, 2.5), 4 * Math.pow(10, 8), 0));
         
         // Update camera with entity starting positions
         Camera.setCentreOfFrame(Physics.calculateBarycentre(entities));
         
         // Define time acceleration factor (values > 5*10^5 not recommended)
-        double timeAcceleration = Math.pow(10, 5.5);
+        double timeAcceleration = Math.pow(10, 5.2);
         
         // Define simulation display factor
-        double scaleFactor = Math.pow(10, 9);
+        double scaleFactor = Math.pow(10, 9.2);
         
         /**
          *  Define how many times larger than their actual scale bodies will be

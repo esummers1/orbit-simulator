@@ -18,9 +18,6 @@
 || Feature Ideas
 ================================================================================
 
- - Collision mechanics for bodies that come within radius
-   -> Objects combine, use combined mass and 4/3 pi ^3 to calc new radius
- 
  - Highlights or annotations for bodies so they remain visible when very small
  
  - Mousing over an area of the simulation brings up a zoomed-in overlay window

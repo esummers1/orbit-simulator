@@ -89,7 +89,7 @@ public abstract class Geometry {
      * @return double
      */
     public static double calculateRadiusFromVolume(double volume) {
-        return Math.pow((4f * Math.PI) / (3f * volume), 1f/3f);
+        return Math.pow((3f * volume) / (4f * Math.PI), 1f/3f);
     }
     
 }

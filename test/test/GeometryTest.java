@@ -135,23 +135,23 @@ public class GeometryTest {
     @Test
     public void testCalculateVolumeFromRadius() {
         
-        // GIVEN a radius of 1
+        // GIVEN a radius of 2
         // WHEN I calculate the volume of a sphere of this radius
-        double volume = Geometry.calculateVolumeFromRadius(1);
+        double volume = Geometry.calculateVolumeFromRadius(2);
         
-        // THEN the volume I receive is approximately 4.19
-        assert(Math.abs(volume - 4.19) < 0.01);
+        // THEN the volume I receive is approximately 33.51
+        assert(Math.abs(volume - 33.51) < 0.01);
     }
     
     @Test
     public void testCalculateRadiusFromVolume() {
         
-        // GIVEN a volume of 4.19
+        // GIVEN a volume of 33.51
         // WHEN I calculate the radius of a sphere of this volume
-        double radius = Geometry.calculateRadiusFromVolume(4.19);
+        double radius = Geometry.calculateRadiusFromVolume(33.51);
         
-        // THEN the radius I receive is approximately 1
-        assert(Math.abs(radius - 1) < 0.01);
+        // THEN the radius I receive is approximately 2
+        assert(Math.abs(radius - 2) < 0.01);
     }
 
 }

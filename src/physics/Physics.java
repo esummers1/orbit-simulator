@@ -143,11 +143,7 @@ public abstract class Physics {
      */
     public static Body mergeBodies(Body thisBody, Body otherBody) {
         
-        double combinedVolume = 
-                Geometry.calculateVolumeFromRadius(thisBody.getRadius()) +
-                Geometry.calculateVolumeFromRadius(otherBody.getRadius());
-        
-        double newRadius = Geometry.calculateRadiusFromVolume(combinedVolume);
+        double newRadius = calculateRadiusOfMergedBodies(thisBody, otherBody);
         double newMass = thisBody.getMass() + otherBody.getMass();
         
         String newName;
@@ -162,6 +158,22 @@ public abstract class Physics {
         }
         
         return new Body(newName, newMass, newRadius, newColour);
+    }
+    
+    /**
+     * Calculate the radius of a Body formed by the merging of two Bodies.
+     * @param thisBody
+     * @param otherBody
+     * @return double
+     */
+    public static double calculateRadiusOfMergedBodies(Body thisBody,
+            Body otherBody) {
+
+        double combinedVolume = 
+                Geometry.calculateVolumeFromRadius(thisBody.getRadius()) +
+                Geometry.calculateVolumeFromRadius(otherBody.getRadius());
+        
+        return Geometry.calculateRadiusFromVolume(combinedVolume);
     }
     
     /**
