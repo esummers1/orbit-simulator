@@ -85,8 +85,8 @@ public abstract class Physics {
      */
     public static void projectEntity(Entity entity) {
         
-        double xVel = entity.getXVel();
-        double yVel = entity.getYVel();
+        double xVel = entity.getVelocity().getX();
+        double yVel = entity.getVelocity().getY();
         entity.setPositionDirectly(
                     entity.getPosition().getX() + 
                     xVel * Simulation.getTimeStep(),
@@ -101,13 +101,17 @@ public abstract class Physics {
      */
     public static void applyForce(Entity entity, XYVector force) {
         
+        double timeStep = Simulation.getTimeStep();
+        
         double mass = entity.getBody().getMass();
+        double initialXVel = entity.getVelocity().getX();
+        double initialYVel = entity.getVelocity().getY();
         
         double xAcc = force.getX() / mass;
         double yAcc = force.getY() / mass;
         
-        entity.setXVel(entity.getXVel() + xAcc * Simulation.getTimeStep());
-        entity.setYVel(entity.getYVel() + yAcc * Simulation.getTimeStep());
+        entity.getVelocity().setX(initialXVel + xAcc * timeStep);
+        entity.getVelocity().setY(initialYVel + yAcc * timeStep);
     }
     
     /**
@@ -210,7 +214,9 @@ public abstract class Physics {
         
         double mass = entity.getBody().getMass();
         
-        return new XYVector(entity.getXVel() * mass, entity.getYVel() * mass);
+        return new XYVector(
+                entity.getVelocity().getX() * mass, 
+                entity.getVelocity().getY() * mass);
     }
     
 }

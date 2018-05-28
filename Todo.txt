@@ -4,12 +4,6 @@
 
  - Finish unit tests
  
- - Refactor understanding of x/yVel to be an XYVector object?
- 
- - Bug: something is making bodies get rendered off-centre
-   -> gets worse as entity display scale factor increases
-     --> review algebra, may need to introduce this factor into scaled position
- 
  - Separate render loop from physics loop, e.g. render separately at 60 fps
 
 ================================================================================

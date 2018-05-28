@@ -6,6 +6,7 @@ import main.Camera;
 import main.Display;
 import main.Simulation;
 import physics.Position;
+import physics.XYVector;
 
 /**
  * Class representing physical objects in the simulation (e.g. planets).
@@ -47,8 +48,7 @@ public class Entity {
     }
     
     private Body body;
-    private double xVel;
-    private double yVel;
+    private XYVector velocity;
     private Position position;
     
     public Entity(
@@ -59,8 +59,7 @@ public class Entity {
             double y) {
         
         this.setBody(body);
-        this.setXVel(xVel);
-        this.setYVel(yVel);
+        this.setVelocity(new XYVector(xVel, yVel));
         this.setPosition(new Position(x, y));
     }
     
@@ -71,21 +70,13 @@ public class Entity {
     public void setBody(Body body) {
         this.body = body;
     }
-
-    public double getXVel() {
-        return xVel;
+    
+    public XYVector getVelocity() {
+        return velocity;
     }
-
-    public void setXVel(double xVel) {
-        this.xVel = xVel;
-    }
-
-    public double getYVel() {
-        return yVel;
-    }
-
-    public void setYVel(double yVel) {
-        this.yVel = yVel;
+    
+    public void setVelocity(XYVector velocity) {
+        this.velocity = velocity;
     }
 
     public Position getPosition() {

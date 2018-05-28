@@ -114,8 +114,8 @@ public class PhysicsTest {
         
         // THEN the Entity will have X- and Y-velocities equal in magnitude
         // to the time step.
-        assert(entity.getXVel() == Simulation.getTimeStep());
-        assert(entity.getYVel() == Simulation.getTimeStep());
+        assert(entity.getVelocity().getX() == Simulation.getTimeStep());
+        assert(entity.getVelocity().getY() == Simulation.getTimeStep());
     }
     
     @Test
