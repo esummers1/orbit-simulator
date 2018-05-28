@@ -13,7 +13,3 @@
  - Highlights or annotations for bodies so they remain visible when very small
  
  - Mousing over an area of the simulation brings up a zoomed-in overlay window
- 
- - Camera view scaling mechanics
-   -> Use a mouse wheel listener or keylisteners to take manual zoom inputs
-   -> could also program in an automatic version but this would have tradeoffs

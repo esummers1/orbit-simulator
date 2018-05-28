@@ -1,5 +1,7 @@
 package main;
 
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.util.ArrayList;
 import java.util.ConcurrentModificationException;
 import java.util.List;
@@ -16,10 +18,11 @@ import physics.XYVector;
  * 
  * @author Eddie Summers
  */
-public class Simulation {
+public class Simulation implements KeyListener {
     
     private List<Entity> entities;
     private Display display;
+    private char currentKey;
     
     // Steps per second
     private static final int FRAME_RATE = 300;
@@ -33,6 +36,12 @@ public class Simulation {
     // Entity rendering scale factor (Entities are this many times larger)
     private static double entityDisplayFactor;
     
+    /*
+     * The factor by which sizedScaleFactor is multiplied or divided when zoom
+     * input is given.
+     */
+    private static final double SCALE_FACTOR_INCREMENT = 1.01;
+    
     public Simulation(
             List<Entity> entities, 
             double timeAcceleration,
@@ -44,6 +53,10 @@ public class Simulation {
         Simulation.sizedScaleFactor = scaleFactor / Display.WINDOW_SIZE;
         Simulation.entityDisplayFactor = entityDisplayFactor;
         this.display = new Display(this);
+        
+        System.out.println(
+                "Welcome to Orbit Simulator. Please use the 'i' and 'o' keys "
+                + "to zoom in and out, respectively.");
     }
     
     /**
@@ -87,6 +100,9 @@ public class Simulation {
         
         while(true) {
             
+            // Rescale simulation if required based on keyboard input
+            rescaleSimulation();
+            
             // Do actual simulation work
             updatePhysics();
             render();
@@ -99,6 +115,19 @@ public class Simulation {
             }
         }
         
+    }
+    
+    /**
+     * Alter global scale factor based on user's zoom input.
+     */
+    private void rescaleSimulation() {
+        if (currentKey == 'i') {
+            sizedScaleFactor /= SCALE_FACTOR_INCREMENT;
+        }
+        
+        if (currentKey == 'o') {
+            sizedScaleFactor *= SCALE_FACTOR_INCREMENT;
+        }
     }
     
     /** 
@@ -244,6 +273,26 @@ public class Simulation {
      */
     private void render() {
         display.getPanel().repaint();
+    }
+    
+    /**
+     * Detect key press and store the key's character.
+     */
+    @Override
+    public void keyPressed(KeyEvent e) {
+        currentKey = e.getKeyChar();
+    }
+    
+    /**
+     * (Hacky) set current key to an unused char on key release.
+     */
+    @Override
+    public void keyReleased(KeyEvent e) {
+        currentKey = '?';
+    }
+
+    @Override
+    public void keyTyped(KeyEvent e) {
     }
     
 }

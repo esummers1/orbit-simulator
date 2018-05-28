@@ -50,8 +50,8 @@ public class Launcher {
         // Define time acceleration factor (values > 10^5.2 not recommended)
         double timeAcceleration = Math.pow(10, 5);
         
-        // Define simulation display factor
-        double scaleFactor = Math.pow(10, 9.2);
+        // Define initial scale factor
+        double initialScaleFactor = Math.pow(10, 9.2);
         
         /**
          *  Define how many times larger than their actual scale bodies will be
@@ -63,7 +63,7 @@ public class Launcher {
         Simulation sim = new Simulation(
                 entities, 
                 timeAcceleration, 
-                scaleFactor,
+                initialScaleFactor,
                 entityDisplayFactor);
         
         sim.run();

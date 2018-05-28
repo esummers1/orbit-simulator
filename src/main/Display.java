@@ -21,6 +21,7 @@ public class Display {
         panel = new MyPanel(WINDOW_SIZE, WINDOW_SIZE, sim.getEntities());
         frame = createFrame(panel, createTitle(sim.getEntityNames()));
         frame.setVisible(true);
+        frame.addKeyListener(sim);
     }
     
     /**
