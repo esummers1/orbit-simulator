@@ -30,7 +30,7 @@ public class Simulation {
     // Spatial scale factor with window size taken into account, i.e. m/px
     private static double sizedScaleFactor;
     
-    // Body rendering scale factor
+    // Entity rendering scale factor (Entities are this many times larger)
     private static double entityDisplayFactor;
     
     public Simulation(

@@ -20,7 +20,7 @@ public class Entity {
      * 
      * @author Eddie Summers
      */
-    public class EntityForRendering {
+    public static class EntityForRendering {
         
         private int x;
         private int y;
@@ -102,48 +102,14 @@ public class Entity {
     }
     
     /**
-     * Produce an EntityForRendering object representing the attributes of the
-     * Entity required for it to be rendered this frame by the panel component.
-     * 
-     * This takes into account the parameters of the entity, the scaling factors
-     * and the offset supplied by the Camera class.
-     * @return EntityForRendering
-     */
-    private EntityForRendering calculateEntityForRendering() {
-        
-        double scaleFactor = Simulation.getSizedScaleFactor();
-        double windowSize = Display.WINDOW_SIZE * scaleFactor;
-        
-        double baseX = position.getX() + body.getRadius();
-        double baseY = position.getY() + body.getRadius();
-        
-        double adjustX = Camera.getCentreOfFrame().getX();
-        double adjustY = Camera.getCentreOfFrame().getY();
-        
-        double unscaledX = baseX + (windowSize / 2 - adjustX);
-        double unscaledY = baseY + (windowSize / 2 - adjustY);
-        
-        double scaledRadius = 
-                body.getRadius() * 
-                Simulation.getEntityDisplayFactor() / 
-                Simulation.getSizedScaleFactor();
-        
-        int scaledX = (int) (unscaledX / scaleFactor);
-        int scaledY = (int) (unscaledY / scaleFactor);
-        
-        int scaledDiameter = (int) scaledRadius * 2;
-        
-        return new EntityForRendering(scaledX, scaledY, scaledDiameter);
-    }
-    
-    /**
      * Draw method for the panel component to use when rendering simulation
      * objects.
      * @param g
      */
     public void draw(Graphics2D g) {
         
-        EntityForRendering entityForRendering = calculateEntityForRendering();
+        EntityForRendering entityForRendering = 
+                EntityRenderer.constructEntityForRendering(this);
         
         g.setColor(body.getColour());
         g.fillOval(

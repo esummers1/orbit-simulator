@@ -11,9 +11,7 @@
      --> review algebra, may need to introduce this factor into scaled position
  
  - Separate render loop from physics loop, e.g. render separately at 60 fps
- 
- - Move entity rendering logic into an e.g. EntityRenderer class
- 
+
 ================================================================================
 || Feature Ideas
 ================================================================================
@@ -23,6 +21,5 @@
  - Mousing over an area of the simulation brings up a zoomed-in overlay window
  
  - Camera view scaling mechanics
-   -> Could use escape velocity calc to exclude bodies on escape trajectories
-      from the CofM of all other bodies from the calculation
-   -> Scale based on the largest separation of non-excluded bodies
+   -> Use a mouse wheel listener or keylisteners to take manual zoom inputs
+   -> could also program in an automatic version but this would have tradeoffs
