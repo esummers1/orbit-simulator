@@ -2,4 +2,8 @@
 
 A two-dimensional physics sandbox.
 
-Use the 'i' key to zoom in and the 'o' key to zoom out.
+Controls:
+- 'c': centre view
+- 'i': zoom in
+- 'o': zoom out
+- Numbers 1-9: switch focus

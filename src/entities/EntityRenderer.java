@@ -27,8 +27,8 @@ public abstract class EntityRenderer {
         double xEntity = entity.getPosition().getX();
         double yEntity = entity.getPosition().getY();
         
-        double xCamera = Camera.getCentreOfFrame().getX();
-        double yCamera = Camera.getCentreOfFrame().getY();
+        double xCamera = Camera.getFocus().getX();
+        double yCamera = Camera.getFocus().getY();
         
         int xForRendering = (int) (
                 ((xEntity - xCamera - radius * entityDisplayFactor) /

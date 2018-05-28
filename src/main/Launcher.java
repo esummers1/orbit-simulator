@@ -45,7 +45,7 @@ public class Launcher {
                 -1 * Math.pow(10, 2.9), 0, 0, 4 * Math.pow(10, 8)));
         
         // Update camera with entity starting positions
-        Camera.setCentreOfFrame(Physics.calculateBarycentre(entities));
+        Camera.setFocus(Physics.calculateBarycentre(entities));
         
         // Define time acceleration factor (values > 10^5.2 not recommended)
         double timeAcceleration = Math.pow(10, 5);

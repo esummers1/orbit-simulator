@@ -10,14 +10,14 @@ import physics.Position;
  */
 public abstract class Camera {
     
-    private static Position centreOfFrame;
+    private static Position focus;
 
-    public static Position getCentreOfFrame() {
-        return centreOfFrame;
+    public static Position getFocus() {
+        return focus;
     }
 
-    public static void setCentreOfFrame(Position centreOfFrame) {
-        Camera.centreOfFrame = centreOfFrame;
+    public static void setFocus(Position focus) {
+        Camera.focus = focus;
     }
     
 }

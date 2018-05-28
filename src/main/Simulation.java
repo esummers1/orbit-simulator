@@ -24,6 +24,16 @@ public class Simulation implements KeyListener {
     private Display display;
     private char currentKey;
     
+    // Keys used for selecting Entities to focus on.
+    private static final char[] FOCUS_KEYS = 
+        {'1', '2', '3', '4', '5', '6', '7', '8', '9'};
+    
+    /*
+     * Entity which is the current focus of the Camera. If set to null, the
+     * Camera will look at the simulation's barycentre.
+     */
+    private static Entity currentFocus;
+    
     // Steps per second
     private static final int FRAME_RATE = 300;
     
@@ -49,6 +59,7 @@ public class Simulation implements KeyListener {
             double entityDisplayFactor) {
         
         this.entities = entities;
+        this.currentFocus = null;
         Simulation.timeStep = timeAcceleration / FRAME_RATE;
         Simulation.sizedScaleFactor = scaleFactor / Display.WINDOW_SIZE;
         Simulation.entityDisplayFactor = entityDisplayFactor;
@@ -89,6 +100,10 @@ public class Simulation implements KeyListener {
         return entities;
     }
     
+    public static Entity getCurrentFocus() {
+        return Simulation.currentFocus;
+    }
+    
     /**
      * Main simulation loop.
      */
@@ -96,8 +111,8 @@ public class Simulation implements KeyListener {
         
         while(true) {
             
-            // Rescale simulation if required based on keyboard input
-            rescaleSimulation();
+            // Do actions required based on keyboard input
+            handleInput();
             
             // Do actual simulation work
             updatePhysics();
@@ -114,9 +129,28 @@ public class Simulation implements KeyListener {
     }
     
     /**
-     * Alter global scale factor based on user's zoom input.
+     * Respond to user key inputs.
      */
-    private void rescaleSimulation() {
+    private void handleInput() {
+        
+        for (char key : FOCUS_KEYS) {
+            if (currentKey == key) {
+                int entityIndex = key - 49;
+                
+                // Try to select as focus the Entity of this number
+                try {
+                    currentFocus = entities.get(entityIndex);
+                } catch (Exception e) {}
+            }
+            
+            updateSimulationTitle();
+        }
+        
+        if (currentKey == 'c') {
+            currentFocus = null;
+            updateSimulationTitle();
+        }
+        
         if (currentKey == 'i') {
             sizedScaleFactor /= SCALE_FACTOR_INCREMENT;
         }
@@ -124,6 +158,16 @@ public class Simulation implements KeyListener {
         if (currentKey == 'o') {
             sizedScaleFactor *= SCALE_FACTOR_INCREMENT;
         }
+    }
+    
+    /**
+     * Update the current title of the window.
+     * - Existing Entities
+     * - Current focused Entity
+     */
+    private void updateSimulationTitle() {
+        String title = Display.createTitle(getEntityNames());
+        display.getFrame().setTitle(title);
     }
     
     /** 
@@ -155,8 +199,17 @@ public class Simulation implements KeyListener {
             }
         } catch (ConcurrentModificationException e) {}
         
+        // If the current focus Entity has been merged, reset focus to centre
+        if (!entities.contains(currentFocus)) {
+            currentFocus = null;
+        }
+        
         // Update camera with new situation
-        Camera.setCentreOfFrame(Physics.calculateBarycentre(entities));
+        if (currentFocus == null) {
+            Camera.setFocus(Physics.calculateBarycentre(entities));
+        } else {
+            Camera.setFocus(currentFocus.getPosition());
+        }
     }
     
     /**
@@ -178,9 +231,7 @@ public class Simulation implements KeyListener {
                 // Update list of entities for rendering
                 display.getPanel().updateEntityList(this.entities);
                 
-                // Update window title
-                String title = Display.createTitle(getEntityNames());
-                display.getFrame().setTitle(title);
+                updateSimulationTitle();
             }
         }
     }

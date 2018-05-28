@@ -4,6 +4,8 @@ import java.util.List;
 
 import javax.swing.JFrame;
 
+import entities.Entity;
+
 /**
  * Class, responsible for creating the simulation window.
  * 
@@ -39,6 +41,16 @@ public class Display {
             if (i != names.size() - 1) {
                 title = title + ", ";
             } 
+        }
+        
+        /*
+         * Highlight the Entity which is the current focus of the simulation,
+         * if one is.
+         */
+        Entity currentFocus = Simulation.getCurrentFocus();
+        
+        if (currentFocus != null) {
+            title += " (watching " + currentFocus.getBody().getName() + ")";
         }
         
         return title;
