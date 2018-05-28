@@ -53,10 +53,6 @@ public class Simulation implements KeyListener {
         Simulation.sizedScaleFactor = scaleFactor / Display.WINDOW_SIZE;
         Simulation.entityDisplayFactor = entityDisplayFactor;
         this.display = new Display(this);
-        
-        System.out.println(
-                "Welcome to Orbit Simulator. Please use the 'i' and 'o' keys "
-                + "to zoom in and out, respectively.");
     }
     
     /**
