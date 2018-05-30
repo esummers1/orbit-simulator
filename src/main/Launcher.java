@@ -45,7 +45,7 @@ public class Launcher {
                 -1 * Math.pow(10, 2.9), 0, 0, 4 * Math.pow(10, 8)));
         
         // Update camera with entity starting positions
-        Camera.setFocus(Physics.calculateBarycentre(entities));
+        Camera camera = new Camera(Physics.calculateBarycentre(entities), Display.WINDOW_SIZE);
         
         // Define time acceleration factor (values > 10^5.2 not recommended)
         double timeAcceleration = Math.pow(10, 5);
@@ -64,7 +64,8 @@ public class Launcher {
                 entities, 
                 timeAcceleration, 
                 initialScaleFactor,
-                entityDisplayFactor);
+                entityDisplayFactor,
+                camera);
         
         sim.run();
         

@@ -3,8 +3,6 @@ package entities;
 import java.awt.Graphics2D;
 
 import main.Camera;
-import main.Display;
-import main.Simulation;
 import physics.Position;
 import physics.XYVector;
 
@@ -96,11 +94,13 @@ public class Entity {
      * Draw method for the panel component to use when rendering simulation
      * objects.
      * @param g
+     * @param scale
+     * @param camera
      */
-    public void draw(Graphics2D g) {
+    public void draw(Graphics2D g, double scale, Camera camera) {
         
         EntityForRendering entityForRendering = 
-                EntityRenderer.constructEntityForRendering(this);
+                EntityRenderer.constructEntityForRendering(this, scale, camera);
         
         g.setColor(body.getColour());
         g.fillOval(

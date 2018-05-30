@@ -23,6 +23,7 @@ public class Simulation implements KeyListener {
     private List<Entity> entities;
     private Display display;
     private char currentKey;
+    private Camera camera;
     
     // Keys used for selecting Entities to focus on.
     private static final char[] FOCUS_KEYS = 
@@ -56,13 +57,14 @@ public class Simulation implements KeyListener {
             List<Entity> entities, 
             double timeAcceleration,
             double scaleFactor,
-            double entityDisplayFactor) {
+            double entityDisplayFactor,
+            Camera camera) {
         
         this.entities = entities;
-        this.currentFocus = null;
         Simulation.timeStep = timeAcceleration / FRAME_RATE;
         Simulation.sizedScaleFactor = scaleFactor / Display.WINDOW_SIZE;
         Simulation.entityDisplayFactor = entityDisplayFactor;
+        this.camera = camera;
         this.display = new Display(this);
     }
     
@@ -206,9 +208,9 @@ public class Simulation implements KeyListener {
         
         // Update camera with new situation
         if (currentFocus == null) {
-            Camera.setFocus(Physics.calculateBarycentre(entities));
+            camera.setFocus(Physics.calculateBarycentre(entities));
         } else {
-            Camera.setFocus(currentFocus.getPosition());
+            camera.setFocus(currentFocus.getPosition());
         }
     }
     
@@ -340,6 +342,10 @@ public class Simulation implements KeyListener {
 
     @Override
     public void keyTyped(KeyEvent e) {
+    }
+ 
+    public Camera getCamera() {
+        return camera;
     }
     
 }

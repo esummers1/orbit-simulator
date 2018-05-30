@@ -20,7 +20,7 @@ public class Display {
     public static final int WINDOW_SIZE = 950;
     
     public Display(Simulation sim) {
-        panel = new MyPanel(WINDOW_SIZE, WINDOW_SIZE, sim.getEntities());
+        panel = new MyPanel(WINDOW_SIZE, WINDOW_SIZE, sim.getEntities(), sim.getCamera());
         frame = createFrame(panel, createTitle(sim.getEntityNames()));
         frame.setVisible(true);
         frame.addKeyListener(sim);
