@@ -102,11 +102,6 @@ public class MyPanel extends JPanel {
     private void drawSimulation(Graphics2D g2d, double scale, Camera camera) {
         for (Entity entity : entities) {
             entity.draw(g2d, scale, camera);
-            
-            // check for missing earth
-            if (entity.getBody().getName() == "Earth") {
-                System.out.println("drawing earth!");
-            }
         }
     }
 
