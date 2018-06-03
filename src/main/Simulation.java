@@ -28,6 +28,12 @@ public class Simulation implements KeyListener {
     private static final char[] FOCUS_KEYS = 
         {'1', '2', '3', '4', '5', '6', '7', '8', '9'};
     
+    private static final char CENTRE_KEY = 'c';
+    
+    private static final char ZOOM_IN_KEY = '+';
+    
+    private static final char ZOOM_OUT_KEY = '-';
+    
     /*
      * Entity which is the current focus of the Camera. If set to null, the
      * Camera will look at the simulation's barycentre.
@@ -146,16 +152,16 @@ public class Simulation implements KeyListener {
             updateSimulationTitle();
         }
         
-        if (currentKey == 'c') {
+        if (currentKey == CENTRE_KEY) {
             currentFocus = null;
             updateSimulationTitle();
         }
         
-        if (currentKey == 'i') {
+        if (currentKey == ZOOM_IN_KEY) {
             sizedScaleFactor /= SCALE_FACTOR_INCREMENT;
         }
         
-        if (currentKey == 'o') {
+        if (currentKey == ZOOM_OUT_KEY) {
             sizedScaleFactor *= SCALE_FACTOR_INCREMENT;
         }
     }
