@@ -106,6 +106,10 @@ public class Simulation implements KeyListener {
         return Simulation.currentFocus;
     }
     
+    public Camera getCamera() {
+        return camera;
+    }
+    
     /**
      * Main simulation loop.
      */
@@ -342,10 +346,6 @@ public class Simulation implements KeyListener {
 
     @Override
     public void keyTyped(KeyEvent e) {
-    }
- 
-    public Camera getCamera() {
-        return camera;
     }
     
 }

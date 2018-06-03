@@ -23,12 +23,18 @@ import physics.Position;
 public class MyPanel extends JPanel {
     
     private static final long serialVersionUID = 1L;
+    
+    /*
+     * The reduction in scale factor applied to the contents of the image rendered
+     * using the magnifier camera (following the mouse cursor).
+     */
+    private static final double MAGNIFIER_SCALE_REDUCTION = 3;
+    
+    // The size in pixels of the magnifier overlay square
+    private static final int MAGNIFIER_OVERLAY_SIZE = 200;
 
     private List<Entity> entities;
-    
-    private BufferedImage magnifiedImage = new BufferedImage(200, 200,
-            BufferedImage.TYPE_INT_ARGB);
-
+    private BufferedImage magnifiedImage;
     private Camera camera;
     private Camera magnifyCamera;
 
@@ -37,7 +43,12 @@ public class MyPanel extends JPanel {
         this.setBackground(Color.BLACK);
         this.entities = entities;
         this.camera = camera;
-        this.magnifyCamera = new Camera(new Position(0, 0), 200);
+        this.magnifyCamera = new Camera(new Position(0, 0), MAGNIFIER_OVERLAY_SIZE);
+        
+        this.magnifiedImage = new BufferedImage(
+                MAGNIFIER_OVERLAY_SIZE, 
+                MAGNIFIER_OVERLAY_SIZE, 
+                BufferedImage.TYPE_INT_ARGB);
     }
     
     @Override
@@ -45,7 +56,7 @@ public class MyPanel extends JPanel {
         
         super.paintComponent(g);
         
-        // Draw the simulation onto the panel
+        // Draw the main simulation render onto the panel
         Graphics2D g2d = (Graphics2D) g;
         double scale = Simulation.getSizedScaleFactor();
         drawSimulation(g2d, scale, camera);
@@ -54,28 +65,48 @@ public class MyPanel extends JPanel {
         Point mousePos = MouseInfo.getPointerInfo().getLocation();
         SwingUtilities.convertPointFromScreen(mousePos, this);
         
-        // When the mouse is in the middle of the screen, it should be focused
-        // on our barycentre
-        // Subtract targetSize / 2 because we want the mouse position to be
-        // relative to the centre of the screen, NOT the top-left
+        /*
+         * When the mouse is in the middle of the screen, the magnifier camera
+         * should be focused on the same point as the main camera. We subtract
+         * targetSize / 2 because we want the mouse position to be relative to the
+         * centre of the screen, NOT the top-left.
+         */
         magnifyCamera.setFocus(new Position(
-                (mousePos.x - camera.getTargetSize() / 2) * scale + camera.getFocus().getX(),
-                (mousePos.y - camera.getTargetSize() / 2) * scale + camera.getFocus().getY()));
+                (mousePos.x - camera.getTargetSize() / 2) * scale + 
+                camera.getFocus().getX(),
+                (mousePos.y - camera.getTargetSize() / 2) * scale + 
+                camera.getFocus().getY()));
         
         // Draw the simulation at double scale onto an image
         Graphics2D imgGfx = magnifiedImage.createGraphics();
-        imgGfx.clearRect(0, 0, 200, 200);
-        drawSimulation(imgGfx, scale / 2, magnifyCamera);
+        imgGfx.clearRect(0, 0, MAGNIFIER_OVERLAY_SIZE, MAGNIFIER_OVERLAY_SIZE);
+        drawSimulation(imgGfx, scale / MAGNIFIER_SCALE_REDUCTION, magnifyCamera);
         
         // Draw the image at the cursor
-        g2d.drawImage(magnifiedImage, mousePos.x - 100, mousePos.y - 100, null);
+        g2d.drawImage(
+                magnifiedImage,
+                mousePos.x - MAGNIFIER_OVERLAY_SIZE / 2,
+                mousePos.y - MAGNIFIER_OVERLAY_SIZE / 2,
+                null);
+        
+        // Draw the border of the magnifier overlay box
         g2d.setColor(Color.WHITE);
-        g2d.drawRect(mousePos.x - 100, mousePos.y - 100, 200, 200);
+        
+        g2d.drawRect(
+                mousePos.x - MAGNIFIER_OVERLAY_SIZE / 2, 
+                mousePos.y - MAGNIFIER_OVERLAY_SIZE / 2, 
+                MAGNIFIER_OVERLAY_SIZE, 
+                MAGNIFIER_OVERLAY_SIZE);
     }
     
     private void drawSimulation(Graphics2D g2d, double scale, Camera camera) {
         for (Entity entity : entities) {
             entity.draw(g2d, scale, camera);
+            
+            // check for missing earth
+            if (entity.getBody().getName() == "Earth") {
+                System.out.println("drawing earth!");
+            }
         }
     }
 
@@ -86,4 +117,5 @@ public class MyPanel extends JPanel {
     public void updateEntityList(List<Entity> entities) {
         this.entities = entities;
     }
+    
 }
