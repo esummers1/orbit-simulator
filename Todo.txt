@@ -13,10 +13,10 @@
     -> may need to use forward/back and find some way to not take the input
        every frame, e.g. using KeyTyped.
  
+ - Break up the paintComponent() method of MyPanel
+ 
 ================================================================================
 || Feature Ideas
 ================================================================================
 
  - Highlights or annotations for bodies so they remain visible when very small
- 
- - Mousing over an area of the simulation brings up a zoomed-in overlay window

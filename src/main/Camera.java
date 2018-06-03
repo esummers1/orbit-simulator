@@ -4,20 +4,31 @@ import physics.Position;
 
 /**
  * Class responsible for storing the point in the simulated worldspace around 
- * which the simulation frame should be rendered (i.e. the middle of the view).
+ * which the simulation frame should be rendered (i.e. the middle of the view), as
+ * well as the size of the window in which this frame will exist.
  * 
  * @author Eddie Summers
  */
-public abstract class Camera {
+public class Camera {
     
-    private static Position focus;
+    private Position focus;
+    private int targetSize;
 
-    public static Position getFocus() {
+    public Camera(Position focus, int targetSize) {
+        this.focus = focus;
+        this.targetSize = targetSize;
+    }
+    
+    public Position getFocus() {
         return focus;
     }
 
-    public static void setFocus(Position focus) {
-        Camera.focus = focus;
+    public void setFocus(Position focus) {
+        this.focus = focus;
+    }
+
+    public int getTargetSize() {
+        return targetSize;
     }
     
 }
