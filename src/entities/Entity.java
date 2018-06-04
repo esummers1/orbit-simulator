@@ -1,5 +1,6 @@
 package entities;
 
+import java.awt.Color;
 import java.awt.Graphics2D;
 
 import main.Camera;
@@ -102,12 +103,21 @@ public class Entity {
         EntityForRendering entityForRendering = 
                 EntityRenderer.constructEntityForRendering(this, scale, camera);
         
+        // Draw Entity body
         g.setColor(body.getColour());
         g.fillOval(
                 (int) entityForRendering.getX(), 
                 (int) entityForRendering.getY(),
                 (int) entityForRendering.getDiameter(),
                 (int) entityForRendering.getDiameter());
+        
+        // Draw outline
+        g.setColor(Color.GRAY);
+        g.drawOval(
+                (int) (entityForRendering.getX() - 1),
+                (int) (entityForRendering.getY() - 1),
+                (int) (entityForRendering.getDiameter() + 1),
+                (int) (entityForRendering.getDiameter() + 1));
     }
 
 }

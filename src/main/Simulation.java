@@ -71,6 +71,7 @@ public class Simulation implements KeyListener {
         Simulation.sizedScaleFactor = scaleFactor / Display.WINDOW_SIZE;
         Simulation.entityDisplayFactor = entityDisplayFactor;
         this.camera = camera;
+        
         this.display = new Display(this);
     }
     

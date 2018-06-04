@@ -114,6 +114,12 @@ public class MyPanel extends JPanel {
                 MAGNIFIER_OVERLAY_SIZE);
     }
     
+    /**
+     * Draw all Entities in the simulation at some scale and with some Camera.
+     * @param g2d
+     * @param scale
+     * @param camera
+     */
     private void drawSimulation(Graphics2D g2d, double scale, Camera camera) {
         for (Entity entity : entities) {
             entity.draw(g2d, scale, camera);
