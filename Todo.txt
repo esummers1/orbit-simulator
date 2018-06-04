@@ -4,8 +4,6 @@
 
  - Finish unit tests
  
- - Separate render loop from physics loop, e.g. render separately at 60 fps
- 
  - Use better colour data and implement colour blending on Entity merge
  
  - Find a more generic way to handle switching Entity focus, as current imp

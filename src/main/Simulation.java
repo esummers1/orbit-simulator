@@ -25,6 +25,10 @@ public class Simulation implements KeyListener {
     private char currentKey;
     private Camera camera;
     
+    // Time fields used for determining which steps to render.
+    private long accumulatedTime;
+    private long currentTime;
+    
     // Keys used for selecting Entities to focus on.
     private static final char[] FOCUS_KEYS = 
         {'1', '2', '3', '4', '5', '6', '7', '8', '9'};
@@ -35,14 +39,23 @@ public class Simulation implements KeyListener {
     
     private static final char ZOOM_OUT_KEY = '-';
     
+    // Steps per second
+    private static final int FRAME_RATE = 300;
+    
+    // Delay (in milliseconds) that simulations leaves between renderings.
+    private static final double FRAME_DELAY = 1000 / 120;
+    
+    /*
+     * The factor by which sizedScaleFactor is multiplied or divided when zoom
+     * input is given.
+     */
+    private static final double SCALE_FACTOR_INCREMENT = 1.01;
+    
     /*
      * Entity which is the current focus of the Camera. If set to null, the
      * Camera will look at the simulation's barycentre.
      */
     private static Entity currentFocus;
-    
-    // Steps per second
-    private static final int FRAME_RATE = 300;
     
     // Number of simulated seconds that pass per simulation step
     private static double timeStep;
@@ -52,12 +65,6 @@ public class Simulation implements KeyListener {
     
     // Entity rendering scale factor (Entities are this many times larger)
     private static double entityDisplayFactor;
-    
-    /*
-     * The factor by which sizedScaleFactor is multiplied or divided when zoom
-     * input is given.
-     */
-    private static final double SCALE_FACTOR_INCREMENT = 1.01;
     
     public Simulation(
             List<Entity> entities, 
@@ -73,6 +80,8 @@ public class Simulation implements KeyListener {
         this.camera = camera;
         
         this.display = new Display(this);
+        this.accumulatedTime = 0;
+        this.currentTime = System.currentTimeMillis();
     }
     
     /**
@@ -129,7 +138,11 @@ public class Simulation implements KeyListener {
             
             // Do actual simulation work
             updatePhysics();
-            render();
+            
+            // Render, if this is a step that should be rendered
+            if (checkRendering()) {
+                render();
+            }
             
             // Wait for next step to begin
             try {
@@ -326,6 +339,24 @@ public class Simulation implements KeyListener {
         }
         
         return otherEntities;
+    }
+    
+    /**
+     * Check if the simulation should be rendered in the current step.
+     * @return boolean
+     */
+    private boolean checkRendering() {
+        
+        long newCurrentTime = System.currentTimeMillis();
+        accumulatedTime += newCurrentTime - currentTime;
+        currentTime = newCurrentTime;
+        
+        if (accumulatedTime >= FRAME_DELAY) {
+            accumulatedTime = 0;
+            return true;
+        }
+        
+        return false;
     }
     
     /**
