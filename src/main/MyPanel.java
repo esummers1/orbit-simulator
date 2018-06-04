@@ -61,40 +61,55 @@ public class MyPanel extends JPanel {
         double scale = Simulation.getSizedScaleFactor();
         drawSimulation(g2d, scale, camera);
         
-        // Move our magnifier camera to the mouse
-        Point mousePos = MouseInfo.getPointerInfo().getLocation();
-        SwingUtilities.convertPointFromScreen(mousePos, this);
-        
         /*
          * When the mouse is in the middle of the screen, the magnifier camera
          * should be focused on the same point as the main camera. We subtract
          * targetSize / 2 because we want the mouse position to be relative to the
          * centre of the screen, NOT the top-left.
          */
+        Point mousePos = MouseInfo.getPointerInfo().getLocation();
+        SwingUtilities.convertPointFromScreen(mousePos, this);
+
+        // Move our magnifier camera to the mouse
         magnifyCamera.setFocus(new Position(
                 (mousePos.x - camera.getTargetSize() / 2) * scale + 
                 camera.getFocus().getX(),
                 (mousePos.y - camera.getTargetSize() / 2) * scale + 
                 camera.getFocus().getY()));
         
-        // Draw the simulation at double scale onto an image
-        Graphics2D imgGfx = magnifiedImage.createGraphics();
-        imgGfx.clearRect(0, 0, MAGNIFIER_OVERLAY_SIZE, MAGNIFIER_OVERLAY_SIZE);
-        drawSimulation(imgGfx, scale / MAGNIFIER_SCALE_REDUCTION, magnifyCamera);
+        drawOverlay(g2d, Simulation.getSizedScaleFactor(), magnifyCamera, mousePos);
+    }
+    
+    /**
+     * Draw the magnified overlay image, centred at the mouse cursor.
+     * @param g2d
+     * @param scale
+     * @param magnifyCamera
+     * @param centre
+     */
+    private void drawOverlay(
+            Graphics2D g2d, 
+            double scale, 
+            Camera magnifyCamera,
+            Point centre) {
         
-        // Draw the image at the cursor
+        // Draw the simulation using the scale reduction onto an overlay image
+        Graphics2D imageG2D = magnifiedImage.createGraphics();
+        imageG2D.clearRect(0, 0, MAGNIFIER_OVERLAY_SIZE, MAGNIFIER_OVERLAY_SIZE);
+        drawSimulation(imageG2D, scale / MAGNIFIER_SCALE_REDUCTION, magnifyCamera);
+        
+        // Draw the overlay image at the cursor
         g2d.drawImage(
                 magnifiedImage,
-                mousePos.x - MAGNIFIER_OVERLAY_SIZE / 2,
-                mousePos.y - MAGNIFIER_OVERLAY_SIZE / 2,
+                centre.x - MAGNIFIER_OVERLAY_SIZE / 2,
+                centre.y - MAGNIFIER_OVERLAY_SIZE / 2,
                 null);
         
-        // Draw the border of the magnifier overlay box
+        // Draw the border of the overlay box
         g2d.setColor(Color.WHITE);
-        
         g2d.drawRect(
-                mousePos.x - MAGNIFIER_OVERLAY_SIZE / 2, 
-                mousePos.y - MAGNIFIER_OVERLAY_SIZE / 2, 
+                centre.x - MAGNIFIER_OVERLAY_SIZE / 2, 
+                centre.y - MAGNIFIER_OVERLAY_SIZE / 2, 
                 MAGNIFIER_OVERLAY_SIZE, 
                 MAGNIFIER_OVERLAY_SIZE);
     }
