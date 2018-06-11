@@ -37,25 +37,25 @@ public class Launcher {
         // Create simulation entities
         List<Entity> entities = new ArrayList<>();
         entities.add(new Entity(earthBody, 0, 0, 0, 0));
-        entities.add(new Entity(marsBody, 
-                0, -1 * Math.pow(10, 3), -4 * Math.pow(10, 8), 0));
-        entities.add(new Entity(venusBody,
-                0, 1 * Math.pow(10, 2.5), 4 * Math.pow(10, 8), 0));
+        entities.add(new Entity(venusBody, 
+                Math.pow(10, 3.3), 0, 0, Math.pow(10, 8)));
         entities.add(new Entity(moonBody,
-                -1 * Math.pow(10, 2.9), 0, 0, 4 * Math.pow(10, 8)));
+                0, Math.pow(10, 3.2), -1 * Math.pow(10, 8.3), 0));
+        entities.add(new Entity(marsBody,
+                0, -1 * Math.pow(10, 3.3), Math.pow(10, 8.3), 0));
         
         // Create main camera using entity starting positions and window size
         Camera camera = new Camera(
                 Physics.calculateBarycentre(entities), Display.WINDOW_SIZE);
         
         // Define time acceleration factor (values > 10^5.2 not recommended)
-        double timeAcceleration = Math.pow(10, 5);
+        double timeAcceleration = Math.pow(10, 4.8);
         
         // Define initial scale factor
-        double initialScaleFactor = Math.pow(10, 9.2);
+        double initialScaleFactor = Math.pow(10, 9);
         
         // Define how many times larger than their actual scale bodies will be drawn
-        double entityDisplayFactor = 3;
+        double entityDisplayFactor = 1;
         
         // Begin simulation
         Simulation sim = new Simulation(

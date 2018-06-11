@@ -114,10 +114,10 @@ public class Entity {
         // Draw outline
         g.setColor(Color.GRAY);
         g.drawOval(
-                (int) (entityForRendering.getX() - 1),
-                (int) (entityForRendering.getY() - 1),
-                (int) (entityForRendering.getDiameter() + 1),
-                (int) (entityForRendering.getDiameter() + 1));
+                (int) (entityForRendering.getX()),
+                (int) (entityForRendering.getY()),
+                (int) (entityForRendering.getDiameter()),
+                (int) (entityForRendering.getDiameter()));
     }
 
 }

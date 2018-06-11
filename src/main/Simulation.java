@@ -40,7 +40,7 @@ public class Simulation implements KeyListener {
     private static final char ZOOM_OUT_KEY = '-';
     
     // Steps per second
-    private static final int FRAME_RATE = 300;
+    private static final int FRAME_RATE = 500;
     
     // Delay (in milliseconds) that simulations leaves between renderings.
     private static final double FRAME_DELAY = 1000 / 120;
