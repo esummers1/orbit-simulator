@@ -4,6 +4,8 @@ A two-dimensional physics sandbox.
 
 Controls:
 - 'c': centre view
+- 'o': show zoomed-in overlay
 - '+': zoom in
 - '-': zoom out
-- Numbers 1-9: switch focus
+- '[': cycle view backwards through entities
+- ']': cycle view forwards through entities

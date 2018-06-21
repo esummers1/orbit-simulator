@@ -6,6 +6,7 @@ import java.util.List;
 
 import entities.Body;
 import entities.Entity;
+import physics.Geometry;
 import physics.Physics;
 
 /**
@@ -44,18 +45,19 @@ public class Launcher {
         entities.add(new Entity(marsBody,
                 0, -1 * Math.pow(10, 3.3), Math.pow(10, 8.3), 0));
         
-        // Create main camera using entity starting positions and window size
+        // Define time acceleration factor (values > 10^5.2 not recommended)
+        double timeAcceleration = Math.pow(10, 4.6);
+        
+        // Calculate starting scale factor using the positions of the entities
+        double initialScaleFactor = 
+                2 * Geometry.findGreatestCardinalSeparation(entities);
+        
+        // Define how many times larger than true scale bodies will be drawn
+        double entityDisplayFactor = 1;
+        
+     // Create main camera using entity starting positions and window size
         Camera camera = new Camera(
                 Physics.calculateBarycentre(entities), Display.WINDOW_SIZE);
-        
-        // Define time acceleration factor (values > 10^5.2 not recommended)
-        double timeAcceleration = Math.pow(10, 4.8);
-        
-        // Define initial scale factor
-        double initialScaleFactor = Math.pow(10, 9);
-        
-        // Define how many times larger than their actual scale bodies will be drawn
-        double entityDisplayFactor = 1;
         
         // Begin simulation
         Simulation sim = new Simulation(

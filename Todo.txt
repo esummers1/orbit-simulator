@@ -6,13 +6,7 @@
  
  - Use better colour data and implement colour blending on Entity merge
  
- - Find a more generic way to handle switching Entity focus, as current imp
-   only allows you to select the first 9 Entities in the simulation
-    -> may need to use forward/back and find some way to not take the input
-       every frame, e.g. using KeyTyped.
- 
 ================================================================================
 || Feature Ideas
 ================================================================================
 
- - Make starting zoom dynamic based on simulation setup?

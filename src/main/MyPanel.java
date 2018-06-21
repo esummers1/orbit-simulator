@@ -38,12 +38,15 @@ public class MyPanel extends JPanel {
     private Camera camera;
     private Camera magnifyCamera;
 
-    public MyPanel(int width, int height, List<Entity> entities, Camera camera) {
+    public MyPanel(
+            int width, int height, List<Entity> entities, Camera camera) {
+        
         setPreferredSize(new Dimension(width, height));
         this.setBackground(Color.BLACK);
         this.entities = entities;
         this.camera = camera;
-        this.magnifyCamera = new Camera(new Position(0, 0), MAGNIFIER_OVERLAY_SIZE);
+        this.magnifyCamera = 
+                new Camera(new Position(0, 0), MAGNIFIER_OVERLAY_SIZE);
         
         this.magnifiedImage = new BufferedImage(
                 MAGNIFIER_OVERLAY_SIZE, 
@@ -64,8 +67,8 @@ public class MyPanel extends JPanel {
         /*
          * When the mouse is in the middle of the screen, the magnifier camera
          * should be focused on the same point as the main camera. We subtract
-         * targetSize / 2 because we want the mouse position to be relative to the
-         * centre of the screen, NOT the top-left.
+         * targetSize / 2 because we want the mouse position to be relative to 
+         * the centre of the screen, NOT the top-left.
          */
         Point mousePos = MouseInfo.getPointerInfo().getLocation();
         SwingUtilities.convertPointFromScreen(mousePos, this);
@@ -77,7 +80,14 @@ public class MyPanel extends JPanel {
                 (mousePos.y - camera.getTargetSize() / 2) * scale + 
                 camera.getFocus().getY()));
         
-        drawOverlay(g2d, Simulation.getSizedScaleFactor(), magnifyCamera, mousePos);
+        if (Simulation.getIsDrawingOverlay()) {
+            drawOverlay(
+                    g2d, 
+                    Simulation.getSizedScaleFactor(), 
+                    magnifyCamera, 
+                    mousePos);
+        }
+                
     }
     
     /**
@@ -95,8 +105,10 @@ public class MyPanel extends JPanel {
         
         // Draw the simulation using the scale reduction onto an overlay image
         Graphics2D imageG2D = magnifiedImage.createGraphics();
-        imageG2D.clearRect(0, 0, MAGNIFIER_OVERLAY_SIZE, MAGNIFIER_OVERLAY_SIZE);
-        drawSimulation(imageG2D, scale / MAGNIFIER_SCALE_REDUCTION, magnifyCamera);
+        imageG2D.clearRect(
+                0, 0, MAGNIFIER_OVERLAY_SIZE, MAGNIFIER_OVERLAY_SIZE);
+        drawSimulation(
+                imageG2D, scale / MAGNIFIER_SCALE_REDUCTION, magnifyCamera);
         
         // Draw the overlay image at the cursor
         g2d.drawImage(

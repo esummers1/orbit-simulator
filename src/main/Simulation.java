@@ -25,31 +25,13 @@ public class Simulation implements KeyListener {
     private char currentKey;
     private Camera camera;
     
+    private boolean isCyclingForwards = false;
+    private boolean isCyclingBackwards = false;
+    private static boolean isDrawingOverlay = false;
+    
     // Time fields used for determining which steps to render.
     private long accumulatedTime;
     private long currentTime;
-    
-    // Keys used for selecting Entities to focus on.
-    private static final char[] FOCUS_KEYS = 
-        {'1', '2', '3', '4', '5', '6', '7', '8', '9'};
-    
-    private static final char CENTRE_KEY = 'c';
-    
-    private static final char ZOOM_IN_KEY = '+';
-    
-    private static final char ZOOM_OUT_KEY = '-';
-    
-    // Steps per second
-    private static final int FRAME_RATE = 500;
-    
-    // Delay (in milliseconds) that simulations leaves between renderings.
-    private static final double FRAME_DELAY = 1000 / 120;
-    
-    /*
-     * The factor by which sizedScaleFactor is multiplied or divided when zoom
-     * input is given.
-     */
-    private static final double SCALE_FACTOR_INCREMENT = 1.01;
     
     /*
      * Entity which is the current focus of the Camera. If set to null, the
@@ -65,6 +47,26 @@ public class Simulation implements KeyListener {
     
     // Entity rendering scale factor (Entities are this many times larger)
     private static double entityDisplayFactor;
+    
+    // Steps per second
+    private static final int FRAME_RATE = 500;
+    
+    // Delay (in milliseconds) that simulation leaves between renderings.
+    private static final double FRAME_DELAY = 1000 / 120;
+    
+    /*
+     * The factor by which sizedScaleFactor is multiplied or divided when zoom
+     * input is given.
+     */
+    private static final double SCALE_FACTOR_INCREMENT = 1.01;
+    
+    // Key constants
+    private static final char CYCLE_FORWARD_KEY = ']';
+    private static final char CYCLE_BACKWARD_KEY = '[';
+    private static final char CENTRE_KEY = 'c';
+    private static final char ZOOM_IN_KEY = '+';
+    private static final char ZOOM_OUT_KEY = '-';
+    private static final char DRAW_OVERLAY_KEY = 'o';
     
     public Simulation(
             List<Entity> entities, 
@@ -126,6 +128,10 @@ public class Simulation implements KeyListener {
         return camera;
     }
     
+    public static boolean getIsDrawingOverlay() {
+        return isDrawingOverlay;
+    }
+    
     /**
      * Main simulation loop.
      */
@@ -159,16 +165,15 @@ public class Simulation implements KeyListener {
      */
     private void handleInput() {
         
-        for (char key : FOCUS_KEYS) {
-            if (currentKey == key) {
-                int entityIndex = key - 49;
-                
-                // Try to select as focus the Entity of this number
-                try {
-                    currentFocus = entities.get(entityIndex);
-                } catch (Exception e) {}
-            }
-            
+        if (isCyclingForwards) {
+            currentFocus = retrieveNextEntityInList(currentFocus, entities);
+            isCyclingForwards = false;
+            updateSimulationTitle();
+        }
+        
+        if (isCyclingBackwards) {
+            currentFocus = retrievePreviousEntityInList(currentFocus, entities);
+            isCyclingBackwards = false;
             updateSimulationTitle();
         }
         
@@ -184,6 +189,58 @@ public class Simulation implements KeyListener {
         if (currentKey == ZOOM_OUT_KEY) {
             sizedScaleFactor *= SCALE_FACTOR_INCREMENT;
         }
+        
+        if (currentKey == DRAW_OVERLAY_KEY) {
+            isDrawingOverlay = true;
+        } else {
+            isDrawingOverlay = false;
+        }
+    }
+    
+    
+    /**
+     * Given an Entity and a list of Entities, return the Entity after the given
+     * one in the list, unless:
+     *  - It does not appear
+     *  - It is the last element
+     *  
+     * In either of these cases, return the first element.
+     * 
+     * @param entity
+     * @param entities
+     * @return Entity
+     */
+    private Entity retrieveNextEntityInList(
+            Entity entity, List<Entity> entities) {
+        
+        if (entities.contains(entity) && 
+                entities.indexOf(entity) < (entities.size() - 1)) {
+            return entities.get(entities.indexOf(entity) + 1);
+        }
+        
+        return entities.get(0);
+    }
+    
+    /**
+     * Given an Entity and a list of Entities, return the Entity before the 
+     * given one in the list, unless:
+     *  - It does not appear
+     *  - It is the first element
+     *  
+     * In either of these cases, return the last element.
+     * 
+     * @param entity
+     * @param entities
+     * @return Entity
+     */
+    private Entity retrievePreviousEntityInList(
+            Entity entity, List<Entity> entities) {
+        
+        if (entities.contains(entity) && entities.indexOf(entity) > 0) {
+            return entities.get(entities.indexOf(entity) - 1);
+        }
+        
+        return entities.get(entities.size() - 1);
     }
     
     /**
@@ -228,6 +285,7 @@ public class Simulation implements KeyListener {
         // If the current focus Entity has been merged, reset focus to centre
         if (!entities.contains(currentFocus)) {
             currentFocus = null;
+            updateSimulationTitle();
         }
         
         // Update camera with new situation
@@ -367,19 +425,43 @@ public class Simulation implements KeyListener {
     }
     
     /**
-     * Detect key press and store the key's character.
+     * If the pressed key is one of the keys which can meaningfully be 'held'
+     * for multiple frames, store it as the current key.
      */
     @Override
     public void keyPressed(KeyEvent e) {
-        currentKey = e.getKeyChar();
+        
+        char key = e.getKeyChar();
+        
+        if (
+                key == ZOOM_IN_KEY ||
+                key == ZOOM_OUT_KEY ||
+                key == CENTRE_KEY ||
+                key == DRAW_OVERLAY_KEY) {
+            
+            currentKey = key;
+        }
+        
     }
     
     /**
-     * (Hacky) set current key to an unused char on key release.
+     * Detect focus inputs, or otherwise set the current key to an unused
+     * character (hacky).
      */
     @Override
     public void keyReleased(KeyEvent e) {
-        currentKey = '?';
+        
+        char key = e.getKeyChar();
+        
+        if (key == CYCLE_FORWARD_KEY) {
+            isCyclingForwards = true;
+        } else if (key == CYCLE_BACKWARD_KEY) {
+            isCyclingBackwards = true;
+        } else if (key == CENTRE_KEY){
+            currentKey = key;
+        } else {
+            currentKey = '?';
+        }
     }
 
     @Override
