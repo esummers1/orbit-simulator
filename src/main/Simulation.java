@@ -55,30 +55,33 @@ public class Simulation implements KeyListener {
     private static final double FRAME_DELAY = 1000 / 120;
     
     /*
-     * The factor by which sizedScaleFactor is multiplied or divided when zoom
-     * input is given.
+     * The factor by which scale factors are multiplied or divided when zoom input is 
+     * given.
      */
     private static final double SCALE_FACTOR_INCREMENT = 1.01;
     
     // Key constants
     private static final char CYCLE_FORWARD_KEY = ']';
     private static final char CYCLE_BACKWARD_KEY = '[';
+    private static final char ENTITY_ENLARGE_KEY = '}';
+    private static final char ENTITY_DIMINISH_KEY = '{';
+    private static final char ENTITY_SCALE_RESET_KEY = 'r';
     private static final char CENTRE_KEY = 'c';
     private static final char ZOOM_IN_KEY = '+';
     private static final char ZOOM_OUT_KEY = '-';
+    private static final char RESET_ZOOM_KEY = 'z';
     private static final char DRAW_OVERLAY_KEY = 'o';
     
     public Simulation(
             List<Entity> entities, 
             double timeAcceleration,
             double scaleFactor,
-            double entityDisplayFactor,
             Camera camera) {
         
         this.entities = entities;
         Simulation.timeStep = timeAcceleration / FRAME_RATE;
         Simulation.sizedScaleFactor = scaleFactor / Display.WINDOW_SIZE;
-        Simulation.entityDisplayFactor = entityDisplayFactor;
+        Simulation.entityDisplayFactor = 1;
         this.camera = camera;
         
         this.display = new Display(this);
@@ -190,13 +193,29 @@ public class Simulation implements KeyListener {
             sizedScaleFactor *= SCALE_FACTOR_INCREMENT;
         }
         
+        if (currentKey == RESET_ZOOM_KEY) {
+            sizedScaleFactor = Physics.calculateAppropriateScaleFactor(entities) / 
+                    Display.WINDOW_SIZE;
+        }
+        
+        if (currentKey == ENTITY_ENLARGE_KEY) {
+            entityDisplayFactor *= SCALE_FACTOR_INCREMENT;
+        }
+        
+        if (currentKey == ENTITY_DIMINISH_KEY) {
+            entityDisplayFactor /= SCALE_FACTOR_INCREMENT;
+        }
+        
+        if (currentKey == ENTITY_SCALE_RESET_KEY) {
+            entityDisplayFactor = 1;
+        }
+        
         if (currentKey == DRAW_OVERLAY_KEY) {
             isDrawingOverlay = true;
         } else {
             isDrawingOverlay = false;
         }
     }
-    
     
     /**
      * Given an Entity and a list of Entities, return the Entity after the given
@@ -436,6 +455,8 @@ public class Simulation implements KeyListener {
         if (
                 key == ZOOM_IN_KEY ||
                 key == ZOOM_OUT_KEY ||
+                key == ENTITY_ENLARGE_KEY ||
+                key == ENTITY_DIMINISH_KEY ||
                 key == CENTRE_KEY ||
                 key == DRAW_OVERLAY_KEY) {
             
@@ -457,7 +478,10 @@ public class Simulation implements KeyListener {
             isCyclingForwards = true;
         } else if (key == CYCLE_BACKWARD_KEY) {
             isCyclingBackwards = true;
-        } else if (key == CENTRE_KEY){
+        } else if (
+                key == CENTRE_KEY || 
+                key == ENTITY_SCALE_RESET_KEY || 
+                key == RESET_ZOOM_KEY) {
             currentKey = key;
         } else {
             currentKey = '?';

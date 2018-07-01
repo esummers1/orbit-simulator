@@ -219,4 +219,14 @@ public abstract class Physics {
                 entity.getVelocity().getY() * mass);
     }
     
+    /**
+     * For a list of Entities, calculate an appropriate scale factor to fit them all
+     * in the simulation frame.
+     * @param entities
+     * @return double
+     */
+    public static double calculateAppropriateScaleFactor(List<Entity> entities) {
+        return 3 * Geometry.findGreatestCardinalSeparation(entities);
+    }
+    
 }

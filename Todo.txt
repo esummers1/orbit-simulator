@@ -6,7 +6,14 @@
  
  - Use better colour data and implement colour blending on Entity merge
  
+ - Prompt user to select scenario from provided list in console
+ 
+ - Make overlay zoom factor a property of a Scenario
+ 
+ - Bug: cycling forwards/backwards after pressing C doesn't work
+ 
 ================================================================================
 || Feature Ideas
 ================================================================================
 
+ - Read scenario library from file rather than hardcode it

@@ -9,6 +9,21 @@ import java.awt.Color;
  */
 public class Body {
     
+    // Real-universe bodies
+    public static final Body EARTH = new Body(
+            "Earth", 5.97 * Math.pow(10, 24), 6.37 * Math.pow(10, 6), Color.BLUE);
+    public static final Body MARS = new Body(
+            "Mars", 6.42 * Math.pow(10, 23), 3.39 * Math.pow(10, 6), Color.RED);
+    public static final Body MOON = new Body(
+            "Moon", 7.34 * Math.pow(10, 22), 1.74 * Math.pow(10, 6), Color.GRAY);
+    public static final Body JUPITER = new Body(
+            "Jupiter", 1.90 * Math.pow(10, 27), 7.15 * Math.pow(10, 7), 
+            Color.ORANGE);
+    public static final Body VENUS = new Body(
+            "Venus", 4.87 * Math.pow(10, 24), 6.05 * Math.pow(10, 6), Color.YELLOW);
+    public static final Body SUN = new Body(
+            "Sun", 1.99 * Math.pow(10, 30), 6.96 * Math.pow(10, 8), Color.WHITE);
+    
     private String name;
     private double mass;
     private double radius;
