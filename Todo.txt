@@ -4,8 +4,6 @@
 
  - Finish unit tests
  
- - Use better colour data and implement colour blending on Entity merge
- 
  - Bug: cycling forwards/backwards after pressing C doesn't work
  
 ================================================================================
@@ -13,3 +11,7 @@
 ================================================================================
 
  - Read scenario library from file rather than hardcode it
+
+ - Add ability to 'shoot' entities into the simulation
+  -> Select Body using mousewheel
+  -> Click and drag to define origin (click) and velocity (drag line)

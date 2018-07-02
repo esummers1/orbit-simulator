@@ -6,6 +6,7 @@ import java.util.List;
 
 import entities.Body;
 import entities.Entity;
+import main.MyPanel;
 import main.Simulation;
 
 /**
@@ -140,7 +141,7 @@ public abstract class Physics {
     }
     
     /**
-     * Merge two Body objects, preserving the name and colour of the larger.
+     * Merge two Body objects.
      * @param thisBody
      * @param otherBody
      * @return Body
@@ -151,16 +152,14 @@ public abstract class Physics {
         double newMass = thisBody.getMass() + otherBody.getMass();
         
         String newName;
-        Color newColour;
+        Color newColour = MyPanel.mergeBodyColours(thisBody, otherBody);
         
         if (thisBody.getMass() > otherBody.getMass()) {
             newName = thisBody.getName() + " + " + otherBody.getName();
-            newColour = thisBody.getColour();
         } else {
             newName = otherBody.getName() + " + " + thisBody.getName();
-            newColour = otherBody.getColour();
         }
-        
+
         return new Body(newName, newMass, newRadius, newColour);
     }
     
@@ -220,13 +219,19 @@ public abstract class Physics {
     }
     
     /**
-     * For a list of Entities, calculate an appropriate scale factor to fit them all
-     * in the simulation frame.
+     * For a list of Entities, calculate an appropriate scale factor to fit them
+     * all in the simulation frame.
      * @param entities
      * @return double
      */
-    public static double calculateAppropriateScaleFactor(List<Entity> entities) {
-        return 3 * Geometry.findGreatestCardinalSeparation(entities);
+    public static double calculateAppropriateScaleFactor(
+            List<Entity> entities) {
+
+        if (entities.size() > 1) {
+            return 3 * Geometry.findGreatestCardinalSeparation(entities);
+        }
+
+        return 10 * entities.get(0).getBody().getRadius();
     }
     
 }

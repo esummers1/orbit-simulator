@@ -12,6 +12,7 @@ import java.util.List;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
+import entities.Body;
 import entities.Entity;
 import physics.Position;
 
@@ -59,7 +60,55 @@ public class MyPanel extends JPanel {
                 MAGNIFIER_OVERLAY_SIZE, 
                 BufferedImage.TYPE_INT_ARGB);
     }
-    
+
+    /**
+     * Combine the colours of two Bodies in a weighted manner, using their
+     * respective masses.
+     * @param thisBody
+     * @param otherBody
+     * @return Color
+     */
+    public static Color mergeBodyColours(Body thisBody, Body otherBody) {
+
+        float newR = (float)calculateWeightedColourElement(
+                thisBody.getMass(),
+                thisBody.getColour().getRed(),
+                otherBody.getMass(),
+                otherBody.getColour().getRed());
+        float newG = (float) calculateWeightedColourElement(
+                thisBody.getMass(),
+                thisBody.getColour().getGreen(),
+                otherBody.getMass(),
+                otherBody.getColour().getGreen());
+        float newB = (float) calculateWeightedColourElement(
+                thisBody.getMass(),
+                thisBody.getColour().getBlue(),
+                otherBody.getMass(),
+                otherBody.getColour().getBlue());
+
+        return new Color((newR / 255), (newG / 255), (newB / 255));
+    }
+
+    /**
+     * For a single element of the RGB Colors of each of two Bodies, calculate
+     * the average when weighted according to their masses.
+     * @param thisMass
+     * @param thisElement
+     * @param otherMass
+     * @param otherElement
+     * @return double
+     */
+    private static double calculateWeightedColourElement(
+            double thisMass,
+            double thisElement,
+            double otherMass,
+            double otherElement) {
+
+        double totalMass = thisMass + otherMass;
+
+        return (thisMass * thisElement + otherMass * otherElement) / totalMass;
+    }
+
     @Override
     protected void paintComponent(Graphics g) {
         

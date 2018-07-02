@@ -61,7 +61,13 @@ public class Entity {
         this.setVelocity(new XYVector(xVel, yVel));
         this.setPosition(new Position(x, y));
     }
-    
+
+    public Entity(Body body, XYVector velocity, Position position) {
+        this.body = body;
+        this.velocity = velocity;
+        this.position = position;
+    }
+
     public Body getBody() {
         return body;
     }
