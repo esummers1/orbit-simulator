@@ -28,7 +28,7 @@ public class MyPanel extends JPanel {
      * The reduction in scale factor applied to the contents of the image rendered
      * using the magnifier camera (following the mouse cursor).
      */
-    private static final double MAGNIFIER_SCALE_REDUCTION = 3;
+    private static double overlayZoomFactor;
     
     // The size in pixels of the magnifier overlay square
     private static final int MAGNIFIER_OVERLAY_SIZE = 200;
@@ -39,12 +39,18 @@ public class MyPanel extends JPanel {
     private Camera magnifyCamera;
 
     public MyPanel(
-            int width, int height, List<Entity> entities, Camera camera) {
+            int width,
+            int height,
+            List<Entity> entities,
+            Camera camera,
+            double overlayZoomFactor) {
         
         setPreferredSize(new Dimension(width, height));
         this.setBackground(Color.BLACK);
         this.entities = entities;
         this.camera = camera;
+        this.overlayZoomFactor = overlayZoomFactor;
+
         this.magnifyCamera = 
                 new Camera(new Position(0, 0), MAGNIFIER_OVERLAY_SIZE);
         
@@ -108,7 +114,7 @@ public class MyPanel extends JPanel {
         imageG2D.clearRect(
                 0, 0, MAGNIFIER_OVERLAY_SIZE, MAGNIFIER_OVERLAY_SIZE);
         drawSimulation(
-                imageG2D, scale / MAGNIFIER_SCALE_REDUCTION, magnifyCamera);
+                imageG2D, scale / overlayZoomFactor, magnifyCamera);
         
         // Draw the overlay image at the cursor
         g2d.drawImage(

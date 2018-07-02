@@ -45,8 +45,10 @@ public class ScenarioRepository {
                 Body.MOON, 1.022 * Math.pow(10, 3), 0, 0, 4 * Math.pow(10, 8)));
         
         double timeAcceleration = Math.pow(10, 4.8);
+        double overlayZoomFactor = 3;
         
-        return new Scenario(name, entities, timeAcceleration);
+        return new Scenario(
+                name, entities, timeAcceleration, overlayZoomFactor);
     }
     
     public List<Scenario> getScenarios() {

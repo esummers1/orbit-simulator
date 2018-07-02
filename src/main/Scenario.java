@@ -14,11 +14,18 @@ public class Scenario {
     private String name;
     private List<Entity> entities;
     private double timeAcceleration;
+    private double overlayZoomFactor;
     
-    public Scenario(String name, List<Entity> entities, double timeAcceleration) {
+    public Scenario(
+            String name,
+            List<Entity> entities,
+            double timeAcceleration,
+            double overlayZoomFactor) {
+
         this.name = name;
-        this.setEntities(entities);
-        this.setTimeAcceleration(timeAcceleration);
+        this.entities = entities;
+        this.timeAcceleration = timeAcceleration;
+        this.overlayZoomFactor = overlayZoomFactor;
     }
     
     public String getName() {
@@ -44,5 +51,12 @@ public class Scenario {
     public void setTimeAcceleration(double timeAcceleration) {
         this.timeAcceleration = timeAcceleration;
     }
-    
+
+    public double getOverlayZoomFactor() {
+        return overlayZoomFactor;
+    }
+
+    public void setOverlayZoomFactor(double overlayZoomFactor) {
+        this.overlayZoomFactor = overlayZoomFactor;
+    }
 }

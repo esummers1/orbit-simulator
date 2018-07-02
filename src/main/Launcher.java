@@ -14,18 +14,22 @@ import physics.Physics;
 public class Launcher {
     
     public static void main(String[] args) {
-        
+
+        // Retrieve all default Scenarios
         List<Scenario> scenarios = 
                 ScenarioRepository.retrieveAllScenarios().getScenarios();
-        
-        // TODO: Prompt user to select scenario in console
-        List<Entity> entities = scenarios.get(0).getEntities();
-        double timeAcceleration = scenarios.get(0).getTimeAcceleration();
-        
-        // Calculate starting scale factor using the positions of the entities
-        double initialScaleFactor = 
-                Physics.calculateAppropriateScaleFactor(entities);
-        
+
+        // Prompt user to select Scenario
+        InputProvider provider = new InputProvider();
+        Scenario scenario = provider.selectScenario(scenarios);
+
+        // Read Simulation data from Scenario
+        List<Entity> entities = scenario.getEntities();
+        double timeAcceleration = scenario.getTimeAcceleration();
+        double overlayZoomFactor = scenario.getOverlayZoomFactor();
+        double initialScaleFactor =
+                Physics.calculateAppropriateScaleFactor(scenario.getEntities());
+
         // Create main camera using entity starting positions and window size
         Camera camera = new Camera(
                 Physics.calculateBarycentre(entities), Display.WINDOW_SIZE);
@@ -35,8 +39,9 @@ public class Launcher {
                 entities, 
                 timeAcceleration, 
                 initialScaleFactor,
+                overlayZoomFactor,
                 camera);
-        
+
         sim.run();
         
     }

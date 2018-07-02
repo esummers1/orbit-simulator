@@ -24,7 +24,8 @@ public class Display {
                 WINDOW_SIZE, 
                 WINDOW_SIZE, 
                 sim.getEntities(), 
-                sim.getCamera());
+                sim.getCamera(),
+                sim.getOverlayZoomFactor());
         
         frame = createFrame(panel, createTitle(sim.getEntityNames()));
         frame.setVisible(true);

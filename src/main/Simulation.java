@@ -24,6 +24,7 @@ public class Simulation implements KeyListener {
     private Display display;
     private char currentKey;
     private Camera camera;
+    private double overlayZoomFactor;
     
     private boolean isCyclingForwards = false;
     private boolean isCyclingBackwards = false;
@@ -47,7 +48,7 @@ public class Simulation implements KeyListener {
     
     // Entity rendering scale factor (Entities are this many times larger)
     private static double entityDisplayFactor;
-    
+
     // Steps per second
     private static final int FRAME_RATE = 500;
     
@@ -76,12 +77,14 @@ public class Simulation implements KeyListener {
             List<Entity> entities, 
             double timeAcceleration,
             double scaleFactor,
+            double overlayZoomFactor,
             Camera camera) {
         
         this.entities = entities;
         Simulation.timeStep = timeAcceleration / FRAME_RATE;
         Simulation.sizedScaleFactor = scaleFactor / Display.WINDOW_SIZE;
         Simulation.entityDisplayFactor = 1;
+        this.overlayZoomFactor = overlayZoomFactor;
         this.camera = camera;
         
         this.display = new Display(this);
@@ -90,7 +93,7 @@ public class Simulation implements KeyListener {
     }
     
     /**
-     * Return a list of the names of all entities in the simulaton.
+     * Return a list of the names of all entities in the simulation.
      * @return List<String>
      */
     public List<String> getEntityNames() {
@@ -122,6 +125,10 @@ public class Simulation implements KeyListener {
     public List<Entity> getEntities() {
         return entities;
     }
+
+    public double getOverlayZoomFactor() {
+        return overlayZoomFactor;
+    }
     
     public static Entity getCurrentFocus() {
         return Simulation.currentFocus;
@@ -134,7 +141,7 @@ public class Simulation implements KeyListener {
     public static boolean getIsDrawingOverlay() {
         return isDrawingOverlay;
     }
-    
+
     /**
      * Main simulation loop.
      */
@@ -194,7 +201,8 @@ public class Simulation implements KeyListener {
         }
         
         if (currentKey == RESET_ZOOM_KEY) {
-            sizedScaleFactor = Physics.calculateAppropriateScaleFactor(entities) / 
+            sizedScaleFactor =
+                    Physics.calculateAppropriateScaleFactor(entities) /
                     Display.WINDOW_SIZE;
         }
         
