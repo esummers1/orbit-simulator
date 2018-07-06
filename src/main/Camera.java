@@ -4,8 +4,8 @@ import physics.Position;
 
 /**
  * Class responsible for storing the point in the simulated worldspace around 
- * which the simulation frame should be rendered (i.e. the middle of the view), as
- * well as the size of the window in which this frame will exist.
+ * which the simulation frame should be rendered (i.e. the middle of the view),
+ * as well as the size of the window in which this frame will exist.
  * 
  * @author Eddie Summers
  */
