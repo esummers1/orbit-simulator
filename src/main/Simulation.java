@@ -151,7 +151,7 @@ public class Simulation implements KeyListener {
             
             // Do actions required based on keyboard input
             handleInput();
-            
+
             // Do actual simulation work
             updatePhysics();
             
@@ -190,6 +190,9 @@ public class Simulation implements KeyListener {
         if (currentKey == CENTRE_KEY) {
             currentFocus = null;
             updateSimulationTitle();
+
+            // Reset key for next sampling
+            resetCurrentKey();
         }
         
         if (currentKey == ZOOM_IN_KEY) {
@@ -204,6 +207,9 @@ public class Simulation implements KeyListener {
             sizedScaleFactor =
                     Physics.calculateAppropriateScaleFactor(entities) /
                     Display.WINDOW_SIZE;
+
+            // Reset key for next sampling
+            resetCurrentKey();
         }
         
         if (currentKey == ENTITY_ENLARGE_KEY) {
@@ -216,6 +222,9 @@ public class Simulation implements KeyListener {
         
         if (currentKey == ENTITY_SCALE_RESET_KEY) {
             entityDisplayFactor = 1;
+
+            // Reset key for next sampling
+            resetCurrentKey();
         }
         
         if (currentKey == DRAW_OVERLAY_KEY) {
@@ -223,6 +232,7 @@ public class Simulation implements KeyListener {
         } else {
             isDrawingOverlay = false;
         }
+
     }
     
     /**
@@ -465,7 +475,6 @@ public class Simulation implements KeyListener {
                 key == ZOOM_OUT_KEY ||
                 key == ENTITY_ENLARGE_KEY ||
                 key == ENTITY_DIMINISH_KEY ||
-                key == CENTRE_KEY ||
                 key == DRAW_OVERLAY_KEY) {
             
             currentKey = key;
@@ -474,8 +483,7 @@ public class Simulation implements KeyListener {
     }
     
     /**
-     * Detect focus inputs, or otherwise set the current key to an unused
-     * character (hacky).
+     * Detect focus inputs.
      */
     @Override
     public void keyReleased(KeyEvent e) {
@@ -483,21 +491,37 @@ public class Simulation implements KeyListener {
         char key = e.getKeyChar();
         
         if (key == CYCLE_FORWARD_KEY) {
+
             isCyclingForwards = true;
+
         } else if (key == CYCLE_BACKWARD_KEY) {
+
             isCyclingBackwards = true;
+
         } else if (
-                key == CENTRE_KEY || 
+                key == CENTRE_KEY ||
                 key == ENTITY_SCALE_RESET_KEY || 
                 key == RESET_ZOOM_KEY) {
+
             currentKey = key;
+
         } else {
-            currentKey = '?';
+
+            // Reset key for next sampling
+            resetCurrentKey();
         }
+
     }
 
     @Override
     public void keyTyped(KeyEvent e) {
+    }
+
+    /**
+     * Hacky - set current key to an unused character.
+     */
+    private void resetCurrentKey() {
+        currentKey = '?';
     }
     
 }
