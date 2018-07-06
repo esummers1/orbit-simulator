@@ -184,31 +184,59 @@ public class PhysicsTest {
     }
 
     @Test
-    public void testMergeVelocities_SingleAxisNoResultantSpeed() {
+    public void testMergeVelocities() {
 
-        // GIVEN a pair of entities of equal mass travelling towards each other
-        // solely on one axis at equal speeds
-        Entity thisEntity = new Entity(Body.EARTH, 10, 0, 0, 0);
-        Entity otherEntity = new Entity(Body.EARTH, -10, 0, 0, 0);
+        // GIVEN a pair of Entities with masses 1 and 2, travelling with
+        // velocity vectors (2, 4) and (3.5, 4) respectively
+        Entity thisEntity = new Entity(new Body("", 1, 1, null), 2, 4, 0, 0);
+        Entity otherEntity = new Entity(new Body("", 2, 1, null), 3.5, 4, 0, 0);
 
-        // WHEN I merge their velocities
-        // THEN I get a zero value
-        assert(Physics.mergeVelocities(thisEntity, otherEntity).getX() == 0);
-    }
+        // WHEN I merge their velocities (preserving total momentum)
+        XYVector newVelocity = Physics.mergeVelocities(thisEntity, otherEntity);
 
-    // TODO: finish below tests
-
-    @Test
-    public void testMergeVelocities_TwoAxesWithResultantSpeed() {
+        // THEN I get a vector of (3, 4)
+        assert(newVelocity.getX() == 3);
+        assert(newVelocity.getY() == 4);
     }
 
     @Test
     public void testCalculateMomentum() {
+
+        // GIVEN an Entity of mass 2 and velocity (1, 1)
+        Entity entity = new Entity(new Body("", 2, 1, null), 1, 1, 0, 0);
+
+        // WHEN I calculate its momentum
+        XYVector momentum = Physics.calculateMomentum(entity);
+
+        // THEN I receive an XYVector of (2, 2)
+        assert(momentum.getX() == 2);
+        assert(momentum.getY() == 2);
     }
 
     @Test
-    public void testCalculateAppropriateScaleFactor() {
+    public void testCalculateAppropriateScaleFactor_OneEntity() {
 
+        // GIVEN a list containing one Entity of radius 10
+        List<Entity> entities = new ArrayList<>();
+        entities.add(new Entity(new Body("", 1, 10, null), 0, 0, 0, 0));
+
+        // WHEN I calculate an appropriate viewing scale factor
+        // THEN I receive 100
+        assert(Physics.calculateAppropriateScaleFactor(entities) == 100);
+    }
+
+    @Test
+    public void testCalculateAppropriateScaleFactor_ManyEntities() {
+
+        // GIVEN a list of two Entities separated by 10 metres vertically and 9
+        // metres horizontally
+        List<Entity> entities = new ArrayList<>();
+        entities.add(new Entity(Body.EARTH, 0, 0, 0, 0));
+        entities.add(new Entity(Body.EARTH, 0, 0, 9, 10));
+
+        // WHEN I calculate an appropriate viewing scale factor
+        // THEN I receive 30
+        assert(Physics.calculateAppropriateScaleFactor(entities) == 30);
     }
 
 }
