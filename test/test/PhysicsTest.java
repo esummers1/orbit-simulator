@@ -1,5 +1,6 @@
 package test;
 
+import main.Scenario;
 import org.junit.jupiter.api.Test;
 import java.awt.*;
 import java.util.ArrayList;
@@ -81,8 +82,8 @@ public class PhysicsTest {
         Entity entity = new Entity(new Body("", 0, 0, null), 1, 1, 0, 0);
         entities.add(entity);
 
-        Simulation simulation = new Simulation(
-                entities, 1, 1, 1, new Camera(new Position(0, 0), 1));
+        Simulation simulation =
+                new Simulation(new Scenario("", entities, 1, 1));
 
         // WHEN I project this Entity for one time step
         Physics.projectEntity(entity);
@@ -103,8 +104,8 @@ public class PhysicsTest {
         Entity entity = new Entity(new Body("", 1, 0, null), 0, 0, 0, 0);
         entities.add(entity);
 
-        Simulation simulation = new Simulation(
-                entities, 1, 1, 1, new Camera(new Position(0, 0), 1));
+        Simulation simulation =
+                new Simulation(new Scenario("", entities, 1, 1));
 
         // WHEN I apply this force to this Entity over this time step
         Physics.applyForce(entity, force);

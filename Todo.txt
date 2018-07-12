@@ -6,8 +6,6 @@
 || Feature Ideas
 ================================================================================
 
- - Read scenario library from file rather than hardcode it
-
  - Add ability to 'shoot' entities into the simulation
   -> Select Body using mousewheel
   -> Click and drag to define origin (click) and velocity (drag line)

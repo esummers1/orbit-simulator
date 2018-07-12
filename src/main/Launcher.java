@@ -23,25 +23,8 @@ public class Launcher {
         InputProvider provider = new InputProvider();
         Scenario scenario = provider.selectScenario(scenarios);
 
-        // Read Simulation data from Scenario
-        List<Entity> entities = scenario.getEntities();
-        double timeAcceleration = scenario.getTimeAcceleration();
-        double overlayZoomFactor = scenario.getOverlayZoomFactor();
-        double initialScaleFactor =
-                Physics.calculateAppropriateScaleFactor(scenario.getEntities());
-
-        // Create main camera using entity starting positions and window size
-        Camera camera = new Camera(
-                Physics.calculateBarycentre(entities), Display.WINDOW_SIZE);
-        
         // Begin simulation
-        Simulation sim = new Simulation(
-                entities, 
-                timeAcceleration, 
-                initialScaleFactor,
-                overlayZoomFactor,
-                camera);
-
+        Simulation sim = new Simulation(scenario);
         sim.run();
         
     }

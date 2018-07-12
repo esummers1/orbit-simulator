@@ -56,8 +56,8 @@ public class Simulation implements KeyListener {
     private static final double FRAME_DELAY = 1000 / 120;
     
     /*
-     * The factor by which scale factors are multiplied or divided when zoom input is 
-     * given.
+     * The factor by which scale factors are multiplied or divided when zoom
+     * input is given.
      */
     private static final double SCALE_FACTOR_INCREMENT = 1.01;
     
@@ -73,21 +73,21 @@ public class Simulation implements KeyListener {
     private static final char RESET_ZOOM_KEY = 'z';
     private static final char DRAW_OVERLAY_KEY = 'o';
     
-    public Simulation(
-            List<Entity> entities, 
-            double timeAcceleration,
-            double scaleFactor,
-            double overlayZoomFactor,
-            Camera camera) {
-        
-        this.entities = entities;
-        Simulation.timeStep = timeAcceleration / FRAME_RATE;
-        Simulation.sizedScaleFactor = scaleFactor / Display.WINDOW_SIZE;
+    public Simulation(Scenario scenario) {
+
+        this.entities = scenario.getEntities();
+        this.overlayZoomFactor = scenario.getOverlayZoomFactor();
+
+        Simulation.timeStep = scenario.getTimeAcceleration() / FRAME_RATE;
+        Simulation.sizedScaleFactor =
+                Physics.calculateAppropriateScaleFactor(entities) /
+                Display.WINDOW_SIZE;
         Simulation.entityDisplayFactor = 1;
-        this.overlayZoomFactor = overlayZoomFactor;
-        this.camera = camera;
-        
+
+        this.camera = new Camera(
+                Physics.calculateBarycentre(entities), Display.WINDOW_SIZE);
         this.display = new Display(this);
+
         this.accumulatedTime = 0;
         this.currentTime = System.currentTimeMillis();
     }
@@ -116,10 +116,6 @@ public class Simulation implements KeyListener {
     
     public static double getEntityDisplayFactor() {
         return entityDisplayFactor;
-    }
-    
-    public Display getDisplay() {
-        return display;
     }
     
     public List<Entity> getEntities() {
