@@ -2,10 +2,7 @@
 || Tasks
 ================================================================================
 
-================================================================================
-|| Feature Ideas
-================================================================================
-
- - Add ability to 'shoot' entities into the simulation
-  -> Select Body using mousewheel
-  -> Click and drag to define origin (click) and velocity (drag line)
+ - Entity shooting feature
+  -> Take mouse drag input
+  -> Cycle through available Bodies and display current somehow
+  -> Write unit tests

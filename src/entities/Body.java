@@ -1,6 +1,8 @@
 package entities;
 
 import java.awt.Color;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Class representing the unchanging attributes of a simulation entity.
@@ -36,7 +38,7 @@ public class Body {
 
     public static final Body SUN = new Body(
             "Sun", 1.99e30, 6.96e8, new Color(255, 255, 255));
-    
+
     private String name;
     private double mass;
     private double radius;
@@ -47,6 +49,25 @@ public class Body {
         this.mass = mass;
         this.radius = radius;
         this.colour = colour;
+    }
+
+    /**
+     * Return a list of the default Body constants.
+     * @return List<Body>
+     */
+    public static List<Body> getDefaultBodies() {
+
+        List<Body> defaultBodies = new ArrayList<>();
+        defaultBodies.add(SUN);
+        defaultBodies.add(MERCURY);
+        defaultBodies.add(VENUS);
+        defaultBodies.add(EARTH);
+        defaultBodies.add(MOON);
+        defaultBodies.add(PHOBOS);
+        defaultBodies.add(DEIMOS);
+        defaultBodies.add(JUPITER);
+
+        return defaultBodies;
     }
     
     public String getName() {

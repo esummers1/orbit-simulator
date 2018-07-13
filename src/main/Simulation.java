@@ -8,6 +8,8 @@ import java.util.List;
 
 import entities.Body;
 import entities.Entity;
+import entities.EntityShooter;
+import entities.EntityShot;
 import physics.Geometry;
 import physics.Physics;
 import physics.Position;
@@ -21,6 +23,7 @@ import physics.XYVector;
 public class Simulation implements KeyListener {
     
     private List<Entity> entities;
+    private List<Body> availableBodies;
     private Display display;
     private char currentKey;
     private Camera camera;
@@ -39,6 +42,9 @@ public class Simulation implements KeyListener {
      * Camera will look at the simulation's barycentre.
      */
     private static Entity currentFocus;
+
+    // Currently selected Body for the Entity shooting feature.
+    private static Body currentBodyForShooting;
     
     // Number of simulated seconds that pass per simulation step
     private static double timeStep;
@@ -76,6 +82,7 @@ public class Simulation implements KeyListener {
     public Simulation(Scenario scenario) {
 
         this.entities = scenario.getEntities();
+        this.availableBodies = Body.getDefaultBodies();
         this.overlayZoomFactor = scenario.getOverlayZoomFactor();
 
         Simulation.timeStep = scenario.getTimeAcceleration() / FRAME_RATE;
@@ -455,6 +462,28 @@ public class Simulation implements KeyListener {
      */
     private void render() {
         display.getPanel().repaint();
+    }
+
+    /**
+     * Given a mouse-drag input, create and project an Entity using the
+     * currently-selected Body. The mouse drag is converted to a scaled velocity
+     * and the Entity is delivered at the point at which the drag ended.
+     * @param start
+     * @param end
+     */
+    private void shootEntity(Position start, Position end, double duration) {
+
+        EntityShot shot = new EntityShot(
+                currentBodyForShooting,
+                start,
+                end,
+                camera,
+                duration,
+                sizedScaleFactor);
+
+        Entity entity = EntityShooter.createEntityForShooting(shot);
+
+        entities.add(entity);
     }
     
     /**
