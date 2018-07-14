@@ -1,10 +1,13 @@
 package entities;
 
 import main.Camera;
+import main.Display;
 import physics.BearingVector;
 import physics.Geometry;
 import physics.Position;
 import physics.XYVector;
+
+import java.awt.*;
 
 /**
  * Class responsible for creating Entities in the Simulation, using an
@@ -22,12 +25,12 @@ public class EntityShooter {
      */
     public static Entity createEntityForShooting(EntityShot entityShot) {
 
-        // Obtain actual simulated positions
-        Position start = convertDisplayedPositionToSimulation(
+        // Create new positions for start and end using this distance
+        Position start = calculatePositionInSimulation(
                 entityShot.getStart(),
                 entityShot.getCamera(),
                 entityShot.getScaleFactor());
-        Position end = convertDisplayedPositionToSimulation(
+        Position end = calculatePositionInSimulation(
                 entityShot.getEnd(),
                 entityShot.getCamera(),
                 entityShot.getScaleFactor());
@@ -36,65 +39,41 @@ public class EntityShooter {
         double dragDistance = Geometry.getDistance(start, end);
         double bearing = Geometry.calculateBearing(start, end);
 
-        // *1000 is used because the duration is in milliseconds, not seconds
+        // Convert duration to seconds
+        double secondsDuration = ((double) entityShot.getDuration()) / 1000;
         BearingVector velocity = new BearingVector(
-                dragDistance / (entityShot.getDuration() * 1000), bearing);
+                dragDistance / secondsDuration, bearing);
         XYVector xyVelocity = Geometry.convertToXYVector(velocity);
 
         // Create Entity
-        return new Entity(entityShot.getBody(), xyVelocity, end);
+        Entity entity = new Entity(entityShot.getBody(), xyVelocity, end);
+
+        return entity;
     }
 
     /**
-     * Given a Position on the screen in the Simulation window, return the
-     * Position representing the corresponding location in the simulated
-     * worldspace.
-     * @param position
+     * Given some Point, a Camera and a scale factor, calculate the actual
+     * location of the Point in the simulated worldspace, using its distance
+     * from the Camera's focus point.
+     * @param point
      * @param camera
      * @param scaleFactor
      * @return Position
      */
-    private static Position convertDisplayedPositionToSimulation(
-            Position position, Camera camera, double scaleFactor) {
+    public static Position calculatePositionInSimulation(
+            Point point, Camera camera, double scaleFactor) {
 
-        Position scaledPosition =
-                scaleDisplayedPositionToSimulation(position, scaleFactor);
+        Point cameraFocusPoint = new Point(
+                Display.WINDOW_SIZE / 2, Display.WINDOW_SIZE / 2);
 
-        Position correctedScaledPosition =
-                correctForCameraFocusOffset(scaledPosition, camera);
+        XYVector pointOffset =
+                Geometry.findDisplacementBetweenPoints(point, cameraFocusPoint);
 
-        return correctedScaledPosition;
-    }
+        XYVector positionOffset =
+                Geometry.multiplyXYVectorByScalar(pointOffset, scaleFactor);
 
-    /**
-     * Given a Position measured in pixels, return a Position measured in
-     * metres, i.e. one at Simulation scale. This assumes the Simulation is
-     * being displayed with the top-left corner being 0, 0 metres.
-     * @param position
-     * @return Position
-     */
-    private static Position scaleDisplayedPositionToSimulation(
-            Position position, double scaleFactor) {
-
-        return new Position(
-                position.getX() * scaleFactor,
-                position.getY() * scaleFactor);
-    }
-
-    /**
-     * Given a Position measured in metres and a Camera, return a new Position
-     * offset from the original by the distance of the Camera's focus from the
-     * Simulation's origin.
-     * @param position
-     * @param camera
-     * @return Position
-     */
-    private static Position correctForCameraFocusOffset(
-            Position position, Camera camera) {
-
-        return new Position(
-                position.getX() - camera.getFocus().getX(),
-                position.getY() - camera.getFocus().getY());
+        return Geometry.subtractXYVectorFromPosition(
+                positionOffset, camera.getFocus());
     }
 
 }

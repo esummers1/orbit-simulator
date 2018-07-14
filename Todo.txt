@@ -9,15 +9,10 @@
  - Add blank scenario configurator (time acceleration, overlay zoom)
   -> Or make these things adjustable from within the Simulation
 
- - Fix inconsistent use of Point and Position
-  -> Use Point for screen coords
-  -> Use Position for sim coords
-  -> This will make EntityShooter less confusing
-
  - Add more Bodies
 
  - Add more Scenarios
 
  - Write more unit tests
 
- - ISSUE: Fix offset calculations in EntityShooter (priority for feature)
+ - ISSUE: values are being passed into the EntityShot incorrectly

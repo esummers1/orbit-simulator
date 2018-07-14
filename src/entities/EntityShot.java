@@ -3,6 +3,8 @@ package entities;
 import main.Camera;
 import physics.Position;
 
+import java.awt.*;
+
 /**
  * Class representing a single Entity shot, i.e. information about a single
  * instance of the user selecting a Body and dragging with the mouse to shoot
@@ -13,16 +15,16 @@ import physics.Position;
 public class EntityShot {
 
     private Body body;
-    private Position start;
-    private Position end;
+    private Point start;
+    private Point end;
     private Camera camera;
     private long duration;
     private double scaleFactor;
 
     public EntityShot(
             Body body,
-            Position start,
-            Position end,
+            Point start,
+            Point end,
             Camera camera,
             long duration,
             double scaleFactor) {
@@ -43,19 +45,19 @@ public class EntityShot {
         this.body = body;
     }
 
-    public Position getStart() {
+    public Point getStart() {
         return start;
     }
 
-    public void setStart(Position start) {
+    public void setStart(Point start) {
         this.start = start;
     }
 
-    public Position getEnd() {
+    public Point getEnd() {
         return end;
     }
 
-    public void setEnd(Position end) {
+    public void setEnd(Point end) {
         this.end = end;
     }
 

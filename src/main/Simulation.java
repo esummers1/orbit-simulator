@@ -182,7 +182,7 @@ public class Simulation extends MouseInputAdapter implements KeyListener {
             if (checkRendering()) {
                 render();
             }
-            
+
             // Wait for next step to begin
             try {
                 Thread.sleep((long) (1000 / FRAME_RATE));
@@ -566,13 +566,10 @@ public class Simulation extends MouseInputAdapter implements KeyListener {
      */
     private void shootEntity(Point start, Point end, long duration) {
 
-        Position startPosition = new Position(start.x, start.y);
-        Position endPosition = new Position(end.x, end.y);
-
         EntityShot shot = new EntityShot(
                 currentBodyForShooting,
-                startPosition,
-                endPosition,
+                start,
+                end,
                 camera,
                 duration,
                 sizedScaleFactor);
