@@ -7,8 +7,8 @@ import physics.Position;
 import physics.XYVector;
 
 /**
- * Class responsible for creating Entities in the Simulation according to a
- * mouse-drag input.
+ * Class responsible for creating Entities in the Simulation, using an
+ * EntityShot object.
  *
  * @author Eddie Summers
  */
@@ -36,8 +36,9 @@ public class EntityShooter {
         double dragDistance = Geometry.getDistance(start, end);
         double bearing = Geometry.calculateBearing(start, end);
 
+        // *1000 is used because the duration is in milliseconds, not seconds
         BearingVector velocity = new BearingVector(
-                dragDistance / entityShot.getDuration(), bearing);
+                dragDistance / (entityShot.getDuration() * 1000), bearing);
         XYVector xyVelocity = Geometry.convertToXYVector(velocity);
 
         // Create Entity
@@ -92,8 +93,8 @@ public class EntityShooter {
             Position position, Camera camera) {
 
         return new Position(
-                position.getX() + camera.getFocus().getX(),
-                position.getY() + camera.getFocus().getY());
+                position.getX() - camera.getFocus().getX(),
+                position.getY() - camera.getFocus().getY());
     }
 
 }

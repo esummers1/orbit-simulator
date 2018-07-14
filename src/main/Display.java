@@ -31,6 +31,8 @@ public class Display {
         frame = createFrame(panel, createTitle(sim.getEntityNames()));
         frame.setVisible(true);
         frame.addKeyListener(sim);
+        frame.addMouseListener(sim);
+        frame.addMouseMotionListener(sim);
     }
     
     /**
@@ -42,21 +44,6 @@ public class Display {
         
         String title = "Orbit Simulator";
 
-        // If there are Entities in the Simulation, list them.
-        if (names.size() > 0) {
-
-            title += "| ";
-
-            for (int i = 0; i < names.size(); i++) {
-                title += names.get(i);
-
-                if (i != names.size() - 1) {
-                    title += ", ";
-                }
-            }
-        }
-
-        
         /*
          * Highlight the Entity which is the current focus of the simulation,
          * if one is.
@@ -72,6 +59,20 @@ public class Display {
 
         if (currentBody != null) {
             title += " | Shooting " + currentBody.getName();
+        }
+
+        // If there are Entities in the Simulation, list them.
+        if (names.size() > 0) {
+
+            title += " | ";
+
+            for (int i = 0; i < names.size(); i++) {
+                title += names.get(i);
+
+                if (i != names.size() - 1) {
+                    title += ", ";
+                }
+            }
         }
         
         return title;

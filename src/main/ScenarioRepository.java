@@ -34,7 +34,10 @@ public class ScenarioRepository {
         
         return new ScenarioRepository(allScenarios);
     }
-
+    /**
+     * Create an empty Scenario scaled appropriately for instantiating planets.
+     * @return Scenario
+     */
     private static Scenario createEmptyPlanetaryScaleScenario() {
 
         String name = "Empty Simulation - Planetary Scale";

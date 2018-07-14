@@ -1,6 +1,6 @@
 ## Orbit Simulator
 
-A two-dimensional physics sandbox.
+A two-dimensional Newtonian physics sandbox.
 
 Controls:
 - 'o': show zoomed-in overlay
@@ -15,3 +15,5 @@ Controls:
 - '}': increase drawn size of entities
 - '{': decrease drawn size of entities
 - 'r': reset drawn size of entities to real scale
+
+Click, drag and release to 'shoot' an entity into the simulation, using the currently selected body.

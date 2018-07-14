@@ -16,7 +16,7 @@ public class EntityShot {
     private Position start;
     private Position end;
     private Camera camera;
-    private double duration;
+    private long duration;
     private double scaleFactor;
 
     public EntityShot(
@@ -24,7 +24,7 @@ public class EntityShot {
             Position start,
             Position end,
             Camera camera,
-            double duration,
+            long duration,
             double scaleFactor) {
 
         this.body = body;
@@ -67,11 +67,11 @@ public class EntityShot {
         this.camera = camera;
     }
 
-    public double getDuration() {
+    public long getDuration() {
         return duration;
     }
 
-    public void setDuration(double duration) {
+    public void setDuration(long duration) {
         this.duration = duration;
     }
 

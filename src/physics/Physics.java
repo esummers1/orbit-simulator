@@ -63,7 +63,11 @@ public abstract class Physics {
      * @return Position
      */
     public static Position calculateBarycentre(List<Entity> entities) {
-        
+
+        if (entities.size() == 0) {
+            return new Position(0, 0);
+        }
+
         double xTorques = 0;
         double yTorques = 0;
         double masses = 0;

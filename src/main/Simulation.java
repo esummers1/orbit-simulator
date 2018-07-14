@@ -1,7 +1,9 @@
 package main;
 
+import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.ConcurrentModificationException;
 import java.util.List;
@@ -15,12 +17,15 @@ import physics.Physics;
 import physics.Position;
 import physics.XYVector;
 
+import javax.swing.*;
+import javax.swing.event.MouseInputAdapter;
+
 /**
  * Class responsible for governing the flow of the simulation.
  * 
  * @author Eddie Summers
  */
-public class Simulation implements KeyListener {
+public class Simulation extends MouseInputAdapter implements KeyListener {
     
     private List<Entity> entities;
     private List<Body> availableBodies;
@@ -38,6 +43,12 @@ public class Simulation implements KeyListener {
     // Time fields used for determining which steps to render.
     private long accumulatedTime;
     private long currentTime;
+
+    // Fields used for taking input for the Entity shooting feature.
+    private Point startLocation;
+    private Point endLocation;
+    private long dragStartTime;
+    private long dragEndTime;
     
     /*
      * Entity which is the current focus of the Camera. If set to null, the
@@ -553,12 +564,15 @@ public class Simulation implements KeyListener {
      * @param start
      * @param end
      */
-    private void shootEntity(Position start, Position end, double duration) {
+    private void shootEntity(Point start, Point end, long duration) {
+
+        Position startPosition = new Position(start.x, start.y);
+        Position endPosition = new Position(end.x, end.y);
 
         EntityShot shot = new EntityShot(
                 currentBodyForShooting,
-                start,
-                end,
+                startPosition,
+                endPosition,
                 camera,
                 duration,
                 sizedScaleFactor);
@@ -631,6 +645,30 @@ public class Simulation implements KeyListener {
 
     @Override
     public void keyTyped(KeyEvent e) {
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+
+        dragStartTime = System.currentTimeMillis();
+
+        startLocation = MouseInfo.getPointerInfo().getLocation();
+        SwingUtilities.convertPointFromScreen(
+                startLocation, display.getPanel());
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+
+        dragEndTime = System.currentTimeMillis();
+
+        endLocation = MouseInfo.getPointerInfo().getLocation();
+        SwingUtilities.convertPointFromScreen(
+                endLocation, display.getPanel());
+
+        long duration = (dragEndTime - dragStartTime);
+
+        shootEntity(startLocation, endLocation, duration);
     }
 
     /**
