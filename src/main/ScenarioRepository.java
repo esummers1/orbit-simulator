@@ -5,6 +5,7 @@ import java.util.List;
 
 import entities.Body;
 import entities.Entity;
+import physics.Physics;
 
 /**
  * Class responsible for storing and providing Scenarios.
@@ -26,11 +27,34 @@ public class ScenarioRepository {
     public static ScenarioRepository retrieveAllScenarios() {
         
         List<Scenario> allScenarios = new ArrayList<>();
+        allScenarios.add(createEmptyPlanetaryScaleScenario());
         allScenarios.add(createEarthMoonScenario());
         allScenarios.add(createEarthMarsVenusCollisionScenario());
         allScenarios.add(createInnerPlanetsScenario());
         
         return new ScenarioRepository(allScenarios);
+    }
+    /**
+     * Create an empty Scenario scaled appropriately for instantiating planets.
+     * @return Scenario
+     */
+    private static Scenario createEmptyPlanetaryScaleScenario() {
+
+        String name = "Empty Simulation - Planetary Scale";
+
+        List<Entity> entities = new ArrayList<>();
+
+        double timeAcceleration = 2e4;
+        double overlayZoomFactor = 3;
+        double initialScaleFactor =
+                Physics.calculateAppropriateScaleFactor(entities);
+
+        return new Scenario(
+                name,
+                entities,
+                timeAcceleration,
+                overlayZoomFactor,
+                initialScaleFactor);
     }
     
     /**
@@ -48,9 +72,15 @@ public class ScenarioRepository {
         
         double timeAcceleration = 6.00e4;
         double overlayZoomFactor = 3;
+        double initialScaleFactor =
+                Physics.calculateAppropriateScaleFactor(entities);
         
         return new Scenario(
-                name, entities, timeAcceleration, overlayZoomFactor);
+                name,
+                entities,
+                timeAcceleration,
+                overlayZoomFactor,
+                initialScaleFactor);
     }
 
     /**
@@ -71,9 +101,15 @@ public class ScenarioRepository {
 
         double timeAcceleration = 1.60e4;
         double overlayZoomFactor = 3;
+        double initialScaleFactor =
+                Physics.calculateAppropriateScaleFactor(entities);
 
         return new Scenario(
-                name, entities, timeAcceleration, overlayZoomFactor);
+                name,
+                entities,
+                timeAcceleration,
+                overlayZoomFactor,
+                initialScaleFactor);
     }
 
     /**
@@ -99,9 +135,15 @@ public class ScenarioRepository {
 
         double timeAcceleration = 1.00e5;
         double overlayZoomFactor = 100;
+        double initialScaleFactor =
+                Physics.calculateAppropriateScaleFactor(entities);
 
         return new Scenario(
-                name, entities, timeAcceleration, overlayZoomFactor);
+                name,
+                entities,
+                timeAcceleration,
+                overlayZoomFactor,
+                initialScaleFactor);
     }
 
     public List<Scenario> getScenarios() {

@@ -1,6 +1,8 @@
 package test;
 
 import org.junit.jupiter.api.Test;
+
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -168,6 +170,70 @@ public class GeometryTest {
         // list
         // THEN I receive a distance of 10
         assert(Geometry.findGreatestCardinalSeparation(entities) == 10);
+    }
+
+    @Test
+    public void testAddXYVectorToPosition() {
+
+        // GIVEN an XYVector of (1, 1) and a Position of (4, 5)
+        XYVector vector = new XYVector(1, 1);
+        Position position = new Position(4, 5);
+
+        // WHEN I add the vector to the Position
+        Position displacedPosition =
+                Geometry.addXYVectorToPosition(vector, position);
+
+        // THEN I receive a Position of (5, 6)
+        assert(displacedPosition.getX() == 5);
+        assert(displacedPosition.getY() == 6);
+    }
+
+    @Test
+    public void testSubtractXYVectorFromPosition() {
+
+        // GIVEN an XYVector of (1, 1) and a Position of (4, 5)
+        XYVector vector = new XYVector(1, 1);
+        Position position = new Position(4, 5);
+
+        // WHEN I subtract the vector from the Position
+        Position displacedPosition =
+                Geometry.subtractXYVectorFromPosition(vector, position);
+
+        // THEN I receive a Position of (3, 4)
+        assert(displacedPosition.getX() == 3);
+        assert(displacedPosition.getY() == 4);
+    }
+
+    @Test
+    public void testMultiplyXYVectorByScalar() {
+
+        // GIVEN an XYVector of (2, 2) and a scalar quantity of 2.5
+        XYVector vector = new XYVector(2, 2);
+        double scalar = 2.5;
+
+        // WHEN I multiply the vector by the scalar quantity
+        XYVector scaledVector =
+                Geometry.multiplyXYVectorByScalar(vector, scalar);
+
+        // THEN I receive an XYVector of (5, 5)
+        assert(scaledVector.getX() == 5);
+        assert(scaledVector.getY() == 5);
+    }
+
+    @Test
+    public void testFindDisplacementBetweenPoints() {
+
+        // GIVEN Points at (1, 1) and (11, 12)
+        Point first = new Point(1, 1);
+        Point second = new Point(11, 12);
+
+        // WHEN I find the displacement from the former to the latter
+        XYVector displacement =
+                Geometry.findDisplacementBetweenPoints(first, second);
+
+        // THEN I receive an XYVector of (10, 11)
+        assert(displacement.getX() == 10);
+        assert(displacement.getY() == 11);
     }
 
 }

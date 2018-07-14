@@ -2,10 +2,15 @@
 || Tasks
 ================================================================================
 
-================================================================================
-|| Feature Ideas
-================================================================================
+ - Make cycling forward/backward methods in Simulation generic?
 
- - Add ability to 'shoot' entities into the simulation
-  -> Select Body using mousewheel
-  -> Click and drag to define origin (click) and velocity (drag line)
+ - Find a better way to handle scale factor calculation for an empty Simulation
+
+ - Add blank scenario configurator (time acceleration, overlay zoom)
+  -> Or make these things adjustable from within the Simulation
+
+ - Add more Bodies
+
+ - Add more Scenarios
+
+ - Write more unit tests

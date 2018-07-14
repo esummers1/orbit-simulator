@@ -1,5 +1,6 @@
 package physics;
 
+import java.awt.*;
 import java.util.List;
 
 import entities.Entity;
@@ -133,5 +134,61 @@ public abstract class Geometry {
         
         return ySeparation > xSeparation ? ySeparation : xSeparation;
     }
-    
+
+    /**
+     * Add an XYVector to a Position (i.e. a displacement) and return the new
+     * Position.
+     * @param vector
+     * @param position
+     * @return Position
+     */
+    public static Position addXYVectorToPosition(
+            XYVector vector, Position position) {
+
+        return new Position(
+                position.getX() + vector.getX(),
+                position.getY() + vector.getY());
+    }
+
+    /**
+     * Subtract an XYVector from a Position (i.e. a negative displacement) and
+     * return the new Position.
+     * @param vector
+     * @param position
+     * @return Position
+     */
+    public static Position subtractXYVectorFromPosition(
+            XYVector vector, Position position) {
+
+        return new Position(
+                position.getX() - vector.getX(),
+                position.getY() - vector.getY());
+    }
+
+    /**
+     * Multiply an XYVector by some scalar quantity and return it.
+     * @param vector
+     * @param scalar
+     * @return XYVector
+     */
+    public static XYVector multiplyXYVectorByScalar(
+            XYVector vector, double scalar) {
+
+        return new XYVector(vector.getX() * scalar, vector.getY() * scalar);
+    }
+
+    /**
+     * For a pair of Points (i.e. locations on the screen, measured in pixels),
+     * create an XYVector representing the displacement of the second from the
+     * first.
+     * @param first
+     * @param second
+     * @return XYVector
+     */
+    public static XYVector findDisplacementBetweenPoints(
+            Point first, Point second) {
+
+        return new XYVector(second.x - first.x, second.y - first.y);
+    }
+
 }

@@ -1,44 +1,63 @@
 package main;
 
+import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.ConcurrentModificationException;
 import java.util.List;
 
 import entities.Body;
 import entities.Entity;
+import entities.EntityShooter;
+import entities.EntityShot;
 import physics.Geometry;
 import physics.Physics;
 import physics.Position;
 import physics.XYVector;
+
+import javax.swing.*;
+import javax.swing.event.MouseInputAdapter;
 
 /**
  * Class responsible for governing the flow of the simulation.
  * 
  * @author Eddie Summers
  */
-public class Simulation implements KeyListener {
+public class Simulation extends MouseInputAdapter implements KeyListener {
     
     private List<Entity> entities;
+    private List<Body> availableBodies;
     private Display display;
     private char currentKey;
     private Camera camera;
     private double overlayZoomFactor;
     
-    private boolean isCyclingForwards = false;
-    private boolean isCyclingBackwards = false;
+    private boolean isCyclingFocusForwards = false;
+    private boolean isCyclingFocusBackwards = false;
+    private boolean isCyclingBodyForwards = false;
+    private boolean isCyclingBodyBackwards = false;
     private static boolean isDrawingOverlay = false;
     
     // Time fields used for determining which steps to render.
     private long accumulatedTime;
     private long currentTime;
+
+    // Fields used for taking input for the Entity shooting feature.
+    private Point startLocation;
+    private Point endLocation;
+    private long dragStartTime;
+    private long dragEndTime;
     
     /*
      * Entity which is the current focus of the Camera. If set to null, the
      * Camera will look at the simulation's barycentre.
      */
     private static Entity currentFocus;
+
+    // Currently selected Body for the Entity shooting feature.
+    private static Body currentBodyForShooting;
     
     // Number of simulated seconds that pass per simulation step
     private static double timeStep;
@@ -62,8 +81,10 @@ public class Simulation implements KeyListener {
     private static final double SCALE_FACTOR_INCREMENT = 1.01;
     
     // Key constants
-    private static final char CYCLE_FORWARD_KEY = ']';
-    private static final char CYCLE_BACKWARD_KEY = '[';
+    private static final char CYCLE_FOCUS_FORWARD_KEY = ']';
+    private static final char CYCLE_FOCUS_BACKWARD_KEY = '[';
+    private static final char CYCLE_BODY_FORWARD_KEY = '.';
+    private static final char CYCLE_BODY_BACKWARD_KEY = ',';
     private static final char ENTITY_ENLARGE_KEY = '}';
     private static final char ENTITY_DIMINISH_KEY = '{';
     private static final char ENTITY_SCALE_RESET_KEY = 'r';
@@ -76,6 +97,7 @@ public class Simulation implements KeyListener {
     public Simulation(Scenario scenario) {
 
         this.entities = scenario.getEntities();
+        this.availableBodies = Body.getDefaultBodies();
         this.overlayZoomFactor = scenario.getOverlayZoomFactor();
 
         Simulation.timeStep = scenario.getTimeAcceleration() / FRAME_RATE;
@@ -83,6 +105,7 @@ public class Simulation implements KeyListener {
                 Physics.calculateAppropriateScaleFactor(entities) /
                 Display.WINDOW_SIZE;
         Simulation.entityDisplayFactor = 1;
+        Simulation.currentBodyForShooting = availableBodies.get(0);
 
         this.camera = new Camera(
                 Physics.calculateBarycentre(entities), Display.WINDOW_SIZE);
@@ -129,6 +152,10 @@ public class Simulation implements KeyListener {
     public static Entity getCurrentFocus() {
         return Simulation.currentFocus;
     }
+
+    public static Body getCurrentBodyForShooting() {
+        return Simulation.currentBodyForShooting;
+    }
     
     public Camera getCamera() {
         return camera;
@@ -155,7 +182,7 @@ public class Simulation implements KeyListener {
             if (checkRendering()) {
                 render();
             }
-            
+
             // Wait for next step to begin
             try {
                 Thread.sleep((long) (1000 / FRAME_RATE));
@@ -171,15 +198,29 @@ public class Simulation implements KeyListener {
      */
     private void handleInput() {
         
-        if (isCyclingForwards) {
+        if (isCyclingFocusForwards) {
             currentFocus = retrieveNextEntityInList(currentFocus, entities);
-            isCyclingForwards = false;
+            isCyclingFocusForwards = false;
             updateSimulationTitle();
         }
         
-        if (isCyclingBackwards) {
+        if (isCyclingFocusBackwards) {
             currentFocus = retrievePreviousEntityInList(currentFocus, entities);
-            isCyclingBackwards = false;
+            isCyclingFocusBackwards = false;
+            updateSimulationTitle();
+        }
+
+        if (isCyclingBodyForwards) {
+            currentBodyForShooting = retrieveNextBodyInList(
+                    currentBodyForShooting, availableBodies);
+            isCyclingBodyForwards = false;
+            updateSimulationTitle();
+        }
+
+        if (isCyclingBodyBackwards) {
+            currentBodyForShooting = retrievePreviousBodyInList(
+                    currentBodyForShooting, availableBodies);
+            isCyclingBodyBackwards = false;
             updateSimulationTitle();
         }
         
@@ -245,7 +286,11 @@ public class Simulation implements KeyListener {
      */
     private Entity retrieveNextEntityInList(
             Entity entity, List<Entity> entities) {
-        
+
+        if (entities.size() == 0) {
+            return entity;
+        }
+
         if (entities.contains(entity) && 
                 entities.indexOf(entity) < (entities.size() - 1)) {
             return entities.get(entities.indexOf(entity) + 1);
@@ -268,18 +313,73 @@ public class Simulation implements KeyListener {
      */
     private Entity retrievePreviousEntityInList(
             Entity entity, List<Entity> entities) {
-        
+
+        if (entities.size() == 0) {
+            return entity;
+        }
         if (entities.contains(entity) && entities.indexOf(entity) > 0) {
             return entities.get(entities.indexOf(entity) - 1);
         }
         
         return entities.get(entities.size() - 1);
     }
+
+    /**
+     * Given a Body and a list of Bodies, return the Body after the given one
+     * in the list, unless:
+     *  - It does not appear
+     *  - It is the last element
+     *
+     * In either of these cases, return the first element.
+     *
+     * @param body
+     * @param bodies
+     * @return Body
+     */
+    private Body retrieveNextBodyInList(Body body, List<Body> bodies) {
+
+        if (bodies.size() == 0) {
+            return body;
+        }
+
+        if (bodies.contains(body) &&
+                bodies.indexOf(body) < (bodies.size() - 1)) {
+            return bodies.get(bodies.indexOf(body) + 1);
+        }
+
+        return bodies.get(0);
+    }
+
+    /**
+     * Given a Body and a list of Bodies, return the Body before the given one
+     * in the list, unless:
+     *  - It does not appear
+     *  - It is the first element
+     *
+     * In either of these cases, return the last element.
+     *
+     * @param body
+     * @param bodies
+     * @return Body
+     */
+    private Body retrievePreviousBodyInList(Body body, List<Body> bodies) {
+
+        if (bodies.size() == 0) {
+            return body;
+        }
+
+        if (bodies.contains(body) && bodies.indexOf(body) > 0) {
+            return bodies.get(bodies.indexOf(body) - 1);
+        }
+
+        return bodies.get(bodies.size() - 1);
+    }
     
     /**
      * Update the current title of the window.
      * - Existing Entities
      * - Current focused Entity
+     * - Current selected Body for shooting
      */
     private void updateSimulationTitle() {
         String title = Display.createTitle(getEntityNames());
@@ -456,6 +556,32 @@ public class Simulation implements KeyListener {
     private void render() {
         display.getPanel().repaint();
     }
+
+    /**
+     * Given a mouse-drag input, create and project an Entity using the
+     * currently-selected Body. The mouse drag is converted to a scaled velocity
+     * and the Entity is delivered at the point at which the drag ended.
+     * @param start
+     * @param end
+     */
+    private void shootEntity(Point start, Point end, long duration) {
+
+        EntityShot shot = new EntityShot(
+                currentBodyForShooting,
+                start,
+                end,
+                camera,
+                duration,
+                sizedScaleFactor);
+
+        double timeAcceleration = timeStep * FRAME_RATE;
+
+        Entity entity =
+                EntityShooter.createEntityForShooting(shot, timeAcceleration);
+
+        entities.add(entity);
+        updateSimulationTitle();
+    }
     
     /**
      * If the pressed key is one of the keys which can meaningfully be 'held'
@@ -486,13 +612,21 @@ public class Simulation implements KeyListener {
         
         char key = e.getKeyChar();
         
-        if (key == CYCLE_FORWARD_KEY) {
+        if (key == CYCLE_FOCUS_FORWARD_KEY) {
 
-            isCyclingForwards = true;
+            isCyclingFocusForwards = true;
 
-        } else if (key == CYCLE_BACKWARD_KEY) {
+        } else if (key == CYCLE_FOCUS_BACKWARD_KEY) {
 
-            isCyclingBackwards = true;
+            isCyclingFocusBackwards = true;
+
+        } else if (key == CYCLE_BODY_FORWARD_KEY) {
+
+            isCyclingBodyForwards = true;
+
+        } else if (key == CYCLE_BODY_BACKWARD_KEY) {
+
+            isCyclingBodyBackwards = true;
 
         } else if (
                 key == CENTRE_KEY ||
@@ -511,6 +645,30 @@ public class Simulation implements KeyListener {
 
     @Override
     public void keyTyped(KeyEvent e) {
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+
+        dragStartTime = System.currentTimeMillis();
+
+        startLocation = MouseInfo.getPointerInfo().getLocation();
+        SwingUtilities.convertPointFromScreen(
+                startLocation, display.getPanel());
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+
+        dragEndTime = System.currentTimeMillis();
+
+        endLocation = MouseInfo.getPointerInfo().getLocation();
+        SwingUtilities.convertPointFromScreen(
+                endLocation, display.getPanel());
+
+        long duration = (dragEndTime - dragStartTime);
+
+        shootEntity(startLocation, endLocation, duration);
     }
 
     /**
