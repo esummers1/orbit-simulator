@@ -574,7 +574,10 @@ public class Simulation extends MouseInputAdapter implements KeyListener {
                 duration,
                 sizedScaleFactor);
 
-        Entity entity = EntityShooter.createEntityForShooting(shot);
+        double timeAcceleration = timeStep * FRAME_RATE;
+
+        Entity entity =
+                EntityShooter.createEntityForShooting(shot, timeAcceleration);
 
         entities.add(entity);
         updateSimulationTitle();

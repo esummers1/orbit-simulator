@@ -2,6 +2,7 @@ package entities;
 
 import main.Camera;
 import main.Display;
+import main.Simulation;
 import physics.BearingVector;
 import physics.Geometry;
 import physics.Position;
@@ -17,13 +18,22 @@ import java.awt.*;
  */
 public class EntityShooter {
 
+    /*
+     * In the normal range of time accelerations, mapping the velocity directly
+     * to the speed of the mouse results in shot Entities moving too quickly.
+     * This factor is used to slow this down, i.e. project the Entity at 1/n of
+     * true speed.
+     */
+    private static final double VELOCITY_SENSITIVITY_REDUCTION = 3;
+
     /**
      * Given an EntityShot and the current scale factor, map its properties to
      * an Entity object and return that object.
      * @param entityShot
      * @return Entity
      */
-    public static Entity createEntityForShooting(EntityShot entityShot) {
+    public static Entity createEntityForShooting(
+            EntityShot entityShot, double timeAcceleration) {
 
         // Create new positions for start and end using this distance
         Position start = calculatePositionInSimulation(
@@ -35,14 +45,19 @@ public class EntityShooter {
                 entityShot.getCamera(),
                 entityShot.getScaleFactor());
 
+        // Convert duration to seconds
+        double secondsDuration = ((double) entityShot.getDuration()) / 1000;
+
         // Derive velocity of new Entity
         double dragDistance = Geometry.getDistance(start, end);
         double bearing = Geometry.calculateBearing(start, end);
 
-        // Convert duration to seconds
-        double secondsDuration = ((double) entityShot.getDuration()) / 1000;
         BearingVector velocity = new BearingVector(
-                dragDistance / secondsDuration, bearing);
+                dragDistance /
+                        secondsDuration /
+                        timeAcceleration /
+                        VELOCITY_SENSITIVITY_REDUCTION,
+                bearing);
         XYVector xyVelocity = Geometry.convertToXYVector(velocity);
 
         // Create Entity

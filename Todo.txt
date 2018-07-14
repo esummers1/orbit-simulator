@@ -14,5 +14,3 @@
  - Add more Scenarios
 
  - Write more unit tests
-
- - ISSUE: values are being passed into the EntityShot incorrectly
