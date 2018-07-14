@@ -221,6 +221,9 @@ public abstract class Physics {
     /**
      * For a list of Entities, calculate an appropriate scale factor to fit them
      * all in the simulation frame.
+     *
+     * If the list is empty, scale the simulation appropriately for shooting
+     * planet-sized Bodies in. TODO: find a better solution for this.
      * @param entities
      * @return double
      */
@@ -229,9 +232,11 @@ public abstract class Physics {
 
         if (entities.size() > 1) {
             return 3 * Geometry.findGreatestCardinalSeparation(entities);
+        } else if (entities.size() == 1) {
+            return 10 * entities.get(0).getBody().getRadius();
         }
 
-        return 10 * entities.get(0).getBody().getRadius();
+        return 10 * Body.EARTH.getRadius();
     }
     
 }

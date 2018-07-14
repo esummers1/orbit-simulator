@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.swing.JFrame;
 
+import entities.Body;
 import entities.Entity;
 
 /**
@@ -33,21 +34,28 @@ public class Display {
     }
     
     /**
-     * Creates the title string using a list of entity names.
+     * Creates the title string using a list of Entity names.
      * @param names
      * @return String
      */
     public static String createTitle(List<String> names) {
         
-        String title = "Orbit Simulator | ";
-        
-        for (int i = 0; i < names.size(); i++) {
-            title = title + names.get(i);
-            
-            if (i != names.size() - 1) {
-                title = title + ", ";
-            } 
+        String title = "Orbit Simulator";
+
+        // If there are Entities in the Simulation, list them.
+        if (names.size() > 0) {
+
+            title += "| ";
+
+            for (int i = 0; i < names.size(); i++) {
+                title += names.get(i);
+
+                if (i != names.size() - 1) {
+                    title += ", ";
+                }
+            }
         }
+
         
         /*
          * Highlight the Entity which is the current focus of the simulation,
@@ -56,7 +64,14 @@ public class Display {
         Entity currentFocus = Simulation.getCurrentFocus();
         
         if (currentFocus != null) {
-            title += " (watching " + currentFocus.getBody().getName() + ")";
+            title += " | Watching " + currentFocus.getBody().getName();
+        }
+
+        // Include the currently selected Body for shooting.
+        Body currentBody = Simulation.getCurrentBodyForShooting();
+
+        if (currentBody != null) {
+            title += " | Shooting " + currentBody.getName();
         }
         
         return title;

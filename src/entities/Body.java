@@ -63,6 +63,7 @@ public class Body {
         defaultBodies.add(VENUS);
         defaultBodies.add(EARTH);
         defaultBodies.add(MOON);
+        defaultBodies.add(MARS);
         defaultBodies.add(PHOBOS);
         defaultBodies.add(DEIMOS);
         defaultBodies.add(JUPITER);

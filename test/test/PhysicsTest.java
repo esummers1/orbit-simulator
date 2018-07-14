@@ -83,7 +83,7 @@ public class PhysicsTest {
         entities.add(entity);
 
         Simulation simulation =
-                new Simulation(new Scenario("", entities, 1, 1));
+                new Simulation(new Scenario("", entities, 1, 1, 1));
 
         // WHEN I project this Entity for one time step
         Physics.projectEntity(entity);
@@ -105,7 +105,7 @@ public class PhysicsTest {
         entities.add(entity);
 
         Simulation simulation =
-                new Simulation(new Scenario("", entities, 1, 1));
+                new Simulation(new Scenario("", entities, 1, 1, 1));
 
         // WHEN I apply this force to this Entity over this time step
         Physics.applyForce(entity, force);
