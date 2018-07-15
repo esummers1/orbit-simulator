@@ -227,7 +227,7 @@ public abstract class Physics {
      * all in the simulation frame.
      *
      * If the list is empty, scale the simulation appropriately for shooting
-     * planet-sized Bodies in. TODO: find a better solution for this.
+     * planet-sized Bodies in.
      * @param entities
      * @return double
      */

@@ -4,8 +4,6 @@
 
  - Make cycling forward/backward methods in Simulation generic?
 
- - Find a better way to handle scale factor calculation for an empty Simulation
-
  - Add blank scenario configurator (time acceleration, overlay zoom)
   -> Or make these things adjustable from within the Simulation
 
