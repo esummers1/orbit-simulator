@@ -26,8 +26,8 @@ public class MyPanel extends JPanel {
     private static final long serialVersionUID = 1L;
     
     /*
-     * The reduction in scale factor applied to the contents of the image rendered
-     * using the magnifier camera (following the mouse cursor).
+     * The reduction in scale factor applied to the contents of the image
+     * rendered using the magnifier camera (following the mouse cursor).
      */
     private static double overlayZoomFactor;
     
@@ -189,7 +189,11 @@ public class MyPanel extends JPanel {
      */
     private void drawSimulation(Graphics2D g2d, double scale, Camera camera) {
         for (Entity entity : entities) {
-            entity.draw(g2d, scale, camera);
+            entity.draw(
+                    g2d,
+                    scale,
+                    camera,
+                    Simulation.getIsDrawingNameLabels());
         }
     }
 

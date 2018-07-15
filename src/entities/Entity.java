@@ -13,7 +13,7 @@ import physics.XYVector;
  * @author Eddie Summers
  */
 public class Entity {
-    
+
     /**
      * Inner class representing the properties needed for the panel component
      * to render the outer Entity.
@@ -21,6 +21,8 @@ public class Entity {
      * @author Eddie Summers
      */
     public static class EntityForRendering {
+
+        public static final int NAME_LABEL_OFFSET = 5;
         
         private int x;
         private int y;
@@ -103,8 +105,10 @@ public class Entity {
      * @param g
      * @param scale
      * @param camera
+     * @param drawNameLabels
      */
-    public void draw(Graphics2D g, double scale, Camera camera) {
+    public void draw(
+            Graphics2D g, double scale, Camera camera, boolean drawNameLabels) {
         
         EntityForRendering entityForRendering = 
                 EntityRenderer.constructEntityForRendering(this, scale, camera);
@@ -124,6 +128,27 @@ public class Entity {
                 (int) (entityForRendering.getY()),
                 (int) (entityForRendering.getDiameter()),
                 (int) (entityForRendering.getDiameter()));
+
+        // Draw name label, if this is currently enabled
+        if (drawNameLabels) {
+
+            // Truncate excessively long names
+            String label = this.getBody().getName();
+            label = label.substring(0, Math.min(label.length(), 40));
+
+            if (label.length() == 40) {
+                label += "...";
+            }
+
+            g.drawString(
+                    label,
+                    entityForRendering.getX() +
+                            entityForRendering.getDiameter() +
+                            EntityForRendering.NAME_LABEL_OFFSET,
+                    entityForRendering.getY() +
+                            entityForRendering.getDiameter() +
+                            EntityForRendering.NAME_LABEL_OFFSET);
+        }
     }
 
 }

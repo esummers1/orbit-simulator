@@ -24,7 +24,7 @@ public class EntityShooter {
      * This factor is used to slow this down, i.e. project the Entity at 1/n of
      * true speed.
      */
-    private static final double VELOCITY_SENSITIVITY_REDUCTION = 3;
+    public static final double VELOCITY_SENSITIVITY_REDUCTION = 3;
 
     /**
      * Given an EntityShot and the current scale factor, map its properties to

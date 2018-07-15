@@ -7,7 +7,8 @@ import physics.Geometry;
 import physics.Physics;
 
 /**
- * Class containing the input arguments for the simulation and the main method.
+ * Class responsible for prompting the player to choose a Scenario and begin the
+ * Simulation.
  * 
  * @author Eddie Summers
  */

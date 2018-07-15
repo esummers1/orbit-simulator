@@ -31,6 +31,7 @@ public class ScenarioRepository {
         allScenarios.add(createEarthMoonScenario());
         allScenarios.add(createEarthMarsVenusCollisionScenario());
         allScenarios.add(createInnerPlanetsScenario());
+        allScenarios.add(createJupiterAndMoonsScenario());
         
         return new ScenarioRepository(allScenarios);
     }
@@ -135,6 +136,35 @@ public class ScenarioRepository {
 
         double timeAcceleration = 1.00e5;
         double overlayZoomFactor = 100;
+        double initialScaleFactor =
+                Physics.calculateAppropriateScaleFactor(entities);
+
+        return new Scenario(
+                name,
+                entities,
+                timeAcceleration,
+                overlayZoomFactor,
+                initialScaleFactor);
+    }
+
+    /**
+     * Create a Scenario representing Jupiter and its inner four (Galilean)
+     * moons.
+     * @return Scenario
+     */
+    private static Scenario createJupiterAndMoonsScenario() {
+
+        String name = "Jupiter and its inner moons";
+
+        List<Entity> entities = new ArrayList<>();
+        entities.add(new Entity(Body.JUPITER, 0, 0, 0, 0));
+        entities.add(new Entity(Body.IO, 1.73e4, 0, 0, 4.22e8));
+        entities.add(new Entity(Body.EUROPA, 1.37e4, 0, 0, 6.71e8));
+        entities.add(new Entity(Body.GANYMEDE, 1.09e4, 0, 0, 1.07e9));
+        entities.add(new Entity(Body.CALLISTO, 8.20e3, 0, 0, 1.88e9));
+
+        double timeAcceleration = 2e4;
+        double overlayZoomFactor = 8;
         double initialScaleFactor =
                 Physics.calculateAppropriateScaleFactor(entities);
 

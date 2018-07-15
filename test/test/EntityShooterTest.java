@@ -50,7 +50,9 @@ public class EntityShooterTest {
          * - a Position of (WS*6, WS*5)
          */
         assert(entity.getBody().getName().equals("Moon"));
-        assert(entity.getVelocity().getX() == Display.WINDOW_SIZE / 2);
+        assert(entity.getVelocity().getX() ==
+                (Display.WINDOW_SIZE / 2) /
+                EntityShooter.VELOCITY_SENSITIVITY_REDUCTION);
 
         // Correct for noise in trig function
         assert(Math.abs(entity.getVelocity().getY()) < 0.001);

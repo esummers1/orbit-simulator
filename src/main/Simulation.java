@@ -39,6 +39,7 @@ public class Simulation extends MouseInputAdapter implements KeyListener {
     private boolean isCyclingBodyForwards = false;
     private boolean isCyclingBodyBackwards = false;
     private static boolean isDrawingOverlay = false;
+    private static boolean isDrawingNameLabels = true;
     
     // Time fields used for determining which steps to render.
     private long accumulatedTime;
@@ -93,6 +94,7 @@ public class Simulation extends MouseInputAdapter implements KeyListener {
     private static final char ZOOM_OUT_KEY = '-';
     private static final char RESET_ZOOM_KEY = 'z';
     private static final char DRAW_OVERLAY_KEY = 'o';
+    private static final char DRAW_NAME_LABEL_KEY = 'n';
     
     public Simulation(Scenario scenario) {
 
@@ -165,6 +167,10 @@ public class Simulation extends MouseInputAdapter implements KeyListener {
         return isDrawingOverlay;
     }
 
+    public static boolean getIsDrawingNameLabels() {
+        return isDrawingNameLabels;
+    }
+
     /**
      * Main simulation loop.
      */
@@ -227,8 +233,6 @@ public class Simulation extends MouseInputAdapter implements KeyListener {
         if (currentKey == CENTRE_KEY) {
             currentFocus = null;
             updateSimulationTitle();
-
-            // Reset key for next sampling
             resetCurrentKey();
         }
         
@@ -244,8 +248,6 @@ public class Simulation extends MouseInputAdapter implements KeyListener {
             sizedScaleFactor =
                     Physics.calculateAppropriateScaleFactor(entities) /
                     Display.WINDOW_SIZE;
-
-            // Reset key for next sampling
             resetCurrentKey();
         }
         
@@ -259,8 +261,6 @@ public class Simulation extends MouseInputAdapter implements KeyListener {
         
         if (currentKey == ENTITY_SCALE_RESET_KEY) {
             entityDisplayFactor = 1;
-
-            // Reset key for next sampling
             resetCurrentKey();
         }
         
@@ -268,6 +268,11 @@ public class Simulation extends MouseInputAdapter implements KeyListener {
             isDrawingOverlay = true;
         } else {
             isDrawingOverlay = false;
+        }
+
+        if (currentKey == DRAW_NAME_LABEL_KEY) {
+            isDrawingNameLabels = !isDrawingNameLabels;
+            resetCurrentKey();
         }
 
     }
@@ -605,7 +610,7 @@ public class Simulation extends MouseInputAdapter implements KeyListener {
     }
     
     /**
-     * Detect focus inputs.
+     * Detect "switch" type inputs, i.e. those that cannot be meaningfully held.
      */
     @Override
     public void keyReleased(KeyEvent e) {
@@ -631,7 +636,8 @@ public class Simulation extends MouseInputAdapter implements KeyListener {
         } else if (
                 key == CENTRE_KEY ||
                 key == ENTITY_SCALE_RESET_KEY || 
-                key == RESET_ZOOM_KEY) {
+                key == RESET_ZOOM_KEY ||
+                key == DRAW_NAME_LABEL_KEY) {
 
             currentKey = key;
 

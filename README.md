@@ -15,5 +15,6 @@ Controls:
 - '}': increase drawn size of entities
 - '{': decrease drawn size of entities
 - 'r': reset drawn size of entities to real scale
+- 'n': toggle name labels for entities
 
 Click, drag and release to 'shoot' an entity into the simulation, using the currently selected body.
