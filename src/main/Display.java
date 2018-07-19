@@ -28,7 +28,7 @@ public class Display {
                 sim.getCamera(),
                 sim.getOverlayZoomFactor());
         
-        frame = createFrame(panel, createTitle(sim.getEntityNames()));
+        frame = createFrame(panel, createTitle(sim));
         frame.setVisible(true);
         frame.addKeyListener(sim);
         frame.addMouseListener(sim);
@@ -37,10 +37,10 @@ public class Display {
     
     /**
      * Creates the title string using a list of Entity names.
-     * @param names
+     * @param sim
      * @return String
      */
-    public static String createTitle(List<String> names) {
+    public static String createTitle(Simulation sim) {
         
         String title = "Orbit Simulator";
 
@@ -48,34 +48,41 @@ public class Display {
          * Highlight the Entity which is the current focus of the simulation,
          * if one is.
          */
-        Entity currentFocus = Simulation.getCurrentFocus();
-        
+        Entity currentFocus = sim.getCurrentFocus();
+
         if (currentFocus != null) {
-            title += " | Watching " + currentFocus.getBody().getName();
+            title += " | Watching " +
+                    trimStringToLength(currentFocus.getBody().getName(), 40);
         }
 
         // Include the currently selected Body for shooting.
-        Body currentBody = Simulation.getCurrentBodyForShooting();
+        Body currentBody = sim.getCurrentBodyForShooting();
 
         if (currentBody != null) {
-            title += " | Shooting " + currentBody.getName();
+            title += " | Shooting " +
+                    trimStringToLength(currentBody.getName(), 40);
         }
 
-        // If there are Entities in the Simulation, list them.
-        if (names.size() > 0) {
-
-            title += " | ";
-
-            for (int i = 0; i < names.size(); i++) {
-                title += names.get(i);
-
-                if (i != names.size() - 1) {
-                    title += ", ";
-                }
-            }
-        }
+        // Give number of Entities currently in the Simulation.
+        title += " | Entities: " +  sim.getEntities().size();
         
         return title;
+    }
+
+    /**
+     * Given some String, either return it as-is or truncate it at <length - 3>
+     * characters and add three full stops.
+     * @param string
+     * @param length
+     * @return String
+     */
+    public static String trimStringToLength(String string, int length) {
+
+        if (string.length() >= (length - 3)) {
+            string = string.substring(0, (length - 3)) + "...";
+        }
+
+        return string;
     }
     
     public JFrame createFrame(MyPanel panel, String title) {

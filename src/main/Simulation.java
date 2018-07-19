@@ -55,10 +55,10 @@ public class Simulation extends MouseInputAdapter implements KeyListener {
      * Entity which is the current focus of the Camera. If set to null, the
      * Camera will look at the simulation's barycentre.
      */
-    private static Entity currentFocus;
+    private Entity currentFocus;
 
     // Currently selected Body for the Entity shooting feature.
-    private static Body currentBodyForShooting;
+    private Body currentBodyForShooting;
     
     // Number of simulated seconds that pass per simulation step
     private static double timeStep;
@@ -101,13 +101,13 @@ public class Simulation extends MouseInputAdapter implements KeyListener {
         this.entities = scenario.getEntities();
         this.availableBodies = Body.getDefaultBodies();
         this.overlayZoomFactor = scenario.getOverlayZoomFactor();
+        this.currentBodyForShooting = availableBodies.get(0);
 
         Simulation.timeStep = scenario.getTimeAcceleration() / FRAME_RATE;
         Simulation.sizedScaleFactor =
                 Physics.calculateAppropriateScaleFactor(entities) /
                 Display.WINDOW_SIZE;
         Simulation.entityDisplayFactor = 1;
-        Simulation.currentBodyForShooting = availableBodies.get(0);
 
         this.camera = new Camera(
                 Physics.calculateBarycentre(entities), Display.WINDOW_SIZE);
@@ -151,12 +151,12 @@ public class Simulation extends MouseInputAdapter implements KeyListener {
         return overlayZoomFactor;
     }
     
-    public static Entity getCurrentFocus() {
-        return Simulation.currentFocus;
+    public Entity getCurrentFocus() {
+        return currentFocus;
     }
 
-    public static Body getCurrentBodyForShooting() {
-        return Simulation.currentBodyForShooting;
+    public Body getCurrentBodyForShooting() {
+        return currentBodyForShooting;
     }
     
     public Camera getCamera() {
@@ -207,32 +207,32 @@ public class Simulation extends MouseInputAdapter implements KeyListener {
         if (isCyclingFocusForwards) {
             currentFocus = retrieveNextEntityInList(currentFocus, entities);
             isCyclingFocusForwards = false;
-            updateSimulationTitle();
+            updateSimulationTitle(this);
         }
         
         if (isCyclingFocusBackwards) {
             currentFocus = retrievePreviousEntityInList(currentFocus, entities);
             isCyclingFocusBackwards = false;
-            updateSimulationTitle();
+            updateSimulationTitle(this);
         }
 
         if (isCyclingBodyForwards) {
             currentBodyForShooting = retrieveNextBodyInList(
                     currentBodyForShooting, availableBodies);
             isCyclingBodyForwards = false;
-            updateSimulationTitle();
+            updateSimulationTitle(this);
         }
 
         if (isCyclingBodyBackwards) {
             currentBodyForShooting = retrievePreviousBodyInList(
                     currentBodyForShooting, availableBodies);
             isCyclingBodyBackwards = false;
-            updateSimulationTitle();
+            updateSimulationTitle(this);
         }
         
         if (currentKey == CENTRE_KEY) {
             currentFocus = null;
-            updateSimulationTitle();
+            updateSimulationTitle(this);
             resetCurrentKey();
         }
         
@@ -386,8 +386,8 @@ public class Simulation extends MouseInputAdapter implements KeyListener {
      * - Current focused Entity
      * - Current selected Body for shooting
      */
-    private void updateSimulationTitle() {
-        String title = Display.createTitle(getEntityNames());
+    private void updateSimulationTitle(Simulation simulation) {
+        String title = Display.createTitle(simulation);
         display.getFrame().setTitle(title);
     }
     
@@ -423,7 +423,7 @@ public class Simulation extends MouseInputAdapter implements KeyListener {
         // If the current focus Entity has been merged, reset focus to centre
         if (!entities.contains(currentFocus)) {
             currentFocus = null;
-            updateSimulationTitle();
+            updateSimulationTitle(this);
         }
         
         // Update camera with new situation
@@ -453,7 +453,7 @@ public class Simulation extends MouseInputAdapter implements KeyListener {
                 // Update list of entities for rendering
                 display.getPanel().updateEntityList(this.entities);
                 
-                updateSimulationTitle();
+                updateSimulationTitle(this);
             }
         }
     }
@@ -585,7 +585,7 @@ public class Simulation extends MouseInputAdapter implements KeyListener {
                 EntityShooter.createEntityForShooting(shot, timeAcceleration);
 
         entities.add(entity);
-        updateSimulationTitle();
+        updateSimulationTitle(this);
     }
     
     /**

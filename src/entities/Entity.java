@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 
 import main.Camera;
+import main.Display;
 import physics.Position;
 import physics.XYVector;
 
@@ -133,12 +134,8 @@ public class Entity {
         if (drawNameLabels) {
 
             // Truncate excessively long names
-            String label = this.getBody().getName();
-            label = label.substring(0, Math.min(label.length(), 40));
-
-            if (label.length() == 40) {
-                label += "...";
-            }
+            String label =
+                    Display.trimStringToLength(this.getBody().getName(), 40);
 
             g.drawString(
                     label,
