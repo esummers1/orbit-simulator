@@ -2,13 +2,8 @@
 || Tasks
 ================================================================================
 
- - Make cycling forward/backward methods in Simulation generic?
-
- - Add blank scenario configurator (time acceleration, overlay zoom)
-  -> Or make these things adjustable from within the Simulation
+ - Make overlay zoom adjustable from within Simulation
 
  - Add more Bodies
 
  - Add more Scenarios
-
- - Write more unit tests

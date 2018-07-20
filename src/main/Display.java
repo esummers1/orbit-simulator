@@ -33,6 +33,7 @@ public class Display {
         frame.addKeyListener(sim);
         frame.addMouseListener(sim);
         frame.addMouseMotionListener(sim);
+        frame.addMouseWheelListener(sim);
     }
     
     /**
@@ -43,6 +44,10 @@ public class Display {
     public static String createTitle(Simulation sim) {
         
         String title = "Orbit Simulator";
+
+        // Display time acceleration factor.
+        title += " | Time Acceleration: " + displayDoubleAsScientific(
+                Simulation.getTimeStep() * Simulation.FRAME_RATE, 2);
 
         /*
          * Highlight the Entity which is the current focus of the simulation,
@@ -83,6 +88,48 @@ public class Display {
         }
 
         return string;
+    }
+
+    /**
+     * Render a positive Double in scientific notation (e.g. 4.0 x 10^10), to a
+     * given number of decimal places.
+     * @param number
+     * @param decimalPlaces
+     * @return String
+     */
+    public static String displayDoubleAsScientific(
+            double number, int decimalPlaces) {
+
+        double prefix = number;
+        int exponent = 0;
+
+        if (number >= 1) {
+
+            while (Math.abs(prefix) >= 10) {
+                prefix /= 10;
+                exponent++;
+            }
+
+        } else if (number > 0) {
+
+            while (Math.abs(prefix) < 1) {
+                prefix *= 10;
+                exponent--;
+            }
+
+        } else {
+
+            return "";
+        }
+
+        // Trim digits to given number of decimal places (N.b. not rounding)
+        String truncatedPrefix = String.valueOf(prefix);
+        truncatedPrefix = truncatedPrefix
+                .substring(
+                        0,
+                        Math.min(truncatedPrefix.length(), decimalPlaces + 2));
+
+        return truncatedPrefix + " x 10^" + exponent;
     }
     
     public JFrame createFrame(MyPanel panel, String title) {

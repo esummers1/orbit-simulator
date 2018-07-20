@@ -4,6 +4,7 @@ import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseWheelEvent;
 import java.util.ArrayList;
 import java.util.ConcurrentModificationException;
 import java.util.List;
@@ -38,6 +39,8 @@ public class Simulation extends MouseInputAdapter implements KeyListener {
     private boolean isCyclingFocusBackwards = false;
     private boolean isCyclingBodyForwards = false;
     private boolean isCyclingBodyBackwards = false;
+    private boolean isZoomingIn = false;
+    private boolean isZoomingOut = false;
     private static boolean isDrawingOverlay = false;
     private static boolean isDrawingNameLabels = true;
     
@@ -70,31 +73,43 @@ public class Simulation extends MouseInputAdapter implements KeyListener {
     private static double entityDisplayFactor;
 
     // Steps per second
-    private static final int FRAME_RATE = 500;
+    public static final int FRAME_RATE = 500;
     
     // Delay (in milliseconds) that simulation leaves between renderings.
     private static final double FRAME_DELAY = 1000 / 120;
     
     /*
-     * The factor by which scale factors are multiplied or divided when zoom
+     * The factor by which the scale factor is multiplied or divided when zoom
      * input is given.
      */
-    private static final double SCALE_FACTOR_INCREMENT = 1.01;
+    private static final double SCALE_FACTOR_INCREMENT = 1.1;
+
+    /*
+      * The factor by which the entity display factor is altered per frame when
+      * zoom input is given.
+      */
+    private static final double DISPLAY_SCALE_FACTOR_INCREMENT = 1.01;
+
+    /*
+      * The factor by which the time acceleration factor is altered per frame
+      * when acceleration/deceleration input is given.
+      */
+    private static final double TIME_ACCELERATION_FACTOR_INCREMENT = 1.001;
     
     // Key constants
     private static final char CYCLE_FOCUS_FORWARD_KEY = ']';
     private static final char CYCLE_FOCUS_BACKWARD_KEY = '[';
     private static final char CYCLE_BODY_FORWARD_KEY = '.';
     private static final char CYCLE_BODY_BACKWARD_KEY = ',';
-    private static final char ENTITY_ENLARGE_KEY = '}';
-    private static final char ENTITY_DIMINISH_KEY = '{';
+    private static final char ENTITY_ENLARGE_KEY = '=';
+    private static final char ENTITY_DIMINISH_KEY = '-';
     private static final char ENTITY_SCALE_RESET_KEY = 'r';
     private static final char CENTRE_KEY = 'c';
-    private static final char ZOOM_IN_KEY = '+';
-    private static final char ZOOM_OUT_KEY = '-';
     private static final char RESET_ZOOM_KEY = 'z';
     private static final char DRAW_OVERLAY_KEY = 'o';
     private static final char DRAW_NAME_LABEL_KEY = 'n';
+    private static final char ACCELERATE_TIME_KEY = 'a';
+    private static final char DECELERATE_TIME_KEY = 'd';
     
     public Simulation(Scenario scenario) {
 
@@ -200,7 +215,7 @@ public class Simulation extends MouseInputAdapter implements KeyListener {
     }
     
     /**
-     * Respond to user key inputs.
+     * Respond to user inputs.
      */
     private void handleInput() {
         
@@ -235,15 +250,7 @@ public class Simulation extends MouseInputAdapter implements KeyListener {
             updateSimulationTitle(this);
             resetCurrentKey();
         }
-        
-        if (currentKey == ZOOM_IN_KEY) {
-            sizedScaleFactor /= SCALE_FACTOR_INCREMENT;
-        }
-        
-        if (currentKey == ZOOM_OUT_KEY) {
-            sizedScaleFactor *= SCALE_FACTOR_INCREMENT;
-        }
-        
+
         if (currentKey == RESET_ZOOM_KEY) {
             sizedScaleFactor =
                     Physics.calculateAppropriateScaleFactor(entities) /
@@ -252,11 +259,11 @@ public class Simulation extends MouseInputAdapter implements KeyListener {
         }
         
         if (currentKey == ENTITY_ENLARGE_KEY) {
-            entityDisplayFactor *= SCALE_FACTOR_INCREMENT;
+            entityDisplayFactor *= DISPLAY_SCALE_FACTOR_INCREMENT;
         }
         
         if (currentKey == ENTITY_DIMINISH_KEY) {
-            entityDisplayFactor /= SCALE_FACTOR_INCREMENT;
+            entityDisplayFactor /= DISPLAY_SCALE_FACTOR_INCREMENT;
         }
         
         if (currentKey == ENTITY_SCALE_RESET_KEY) {
@@ -273,6 +280,26 @@ public class Simulation extends MouseInputAdapter implements KeyListener {
         if (currentKey == DRAW_NAME_LABEL_KEY) {
             isDrawingNameLabels = !isDrawingNameLabels;
             resetCurrentKey();
+        }
+
+        if (isZoomingIn) {
+            sizedScaleFactor /= SCALE_FACTOR_INCREMENT;
+            isZoomingIn = false;
+        }
+
+        if (isZoomingOut) {
+            sizedScaleFactor *= SCALE_FACTOR_INCREMENT;
+            isZoomingOut = false;
+        }
+
+        if (currentKey == ACCELERATE_TIME_KEY) {
+            timeStep *= TIME_ACCELERATION_FACTOR_INCREMENT;
+            updateSimulationTitle(this);
+        }
+
+        if (currentKey == DECELERATE_TIME_KEY) {
+            timeStep /= TIME_ACCELERATION_FACTOR_INCREMENT;
+            updateSimulationTitle(this);
         }
 
     }
@@ -407,18 +434,14 @@ public class Simulation extends MouseInputAdapter implements KeyListener {
             Physics.projectEntity(entity);
         }
         
-        /**
-         * Detect and handle collisions as they occur.
-         * 
-         * Currently ignores concurrent modification exception, most likely
-         * caused by editing the list which the for block is looping through.
-         * Have ignored as it does not seem to affect behaviour.
-         */
+        /// Detect and handle collisions as they occur.
         try {
             for (Entity entity : entities) {
                 handleCollisions(entity);
             }
-        } catch (ConcurrentModificationException e) {}
+        } catch (ConcurrentModificationException e) {
+            e.printStackTrace();
+        }
         
         // If the current focus Entity has been merged, reset focus to centre
         if (!entities.contains(currentFocus)) {
@@ -598,11 +621,11 @@ public class Simulation extends MouseInputAdapter implements KeyListener {
         char key = e.getKeyChar();
         
         if (
-                key == ZOOM_IN_KEY ||
-                key == ZOOM_OUT_KEY ||
                 key == ENTITY_ENLARGE_KEY ||
                 key == ENTITY_DIMINISH_KEY ||
-                key == DRAW_OVERLAY_KEY) {
+                key == DRAW_OVERLAY_KEY ||
+                key == ACCELERATE_TIME_KEY ||
+                key == DECELERATE_TIME_KEY) {
             
             currentKey = key;
         }
@@ -675,6 +698,17 @@ public class Simulation extends MouseInputAdapter implements KeyListener {
         long duration = (dragEndTime - dragStartTime);
 
         shootEntity(startLocation, endLocation, duration);
+    }
+
+    @Override
+    public void mouseWheelMoved(MouseWheelEvent e) {
+
+        if (e.getWheelRotation() < 0) {
+            isZoomingIn = true;
+        } else {
+            isZoomingOut = true;
+        }
+
     }
 
     /**
