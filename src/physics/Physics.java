@@ -226,8 +226,8 @@ public abstract class Physics {
      * For a list of Entities, calculate an appropriate scale factor to fit them
      * all in the simulation frame.
      *
-     * If the list is empty, scale the simulation appropriately for shooting
-     * planet-sized Bodies in.
+     * If the list is empty, scale the simulation small so that when the first
+     * Entity is instantiated, it doesn't fill the screen for one frame.
      * @param entities
      * @return double
      */
@@ -240,7 +240,7 @@ public abstract class Physics {
             return 10 * entities.get(0).getBody().getRadius();
         }
 
-        return 10 * Body.EARTH.getRadius();
+        return 1000 * Body.SUN.getRadius();
     }
     
 }

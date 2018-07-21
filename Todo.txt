@@ -2,8 +2,7 @@
 || Tasks
 ================================================================================
 
- - Make overlay zoom adjustable from within Simulation
-
- - Add more Bodies
+ - Fix comodification exception issue when two collisions occur in the same
+   frame
 
  - Add more Scenarios

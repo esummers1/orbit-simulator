@@ -13,7 +13,7 @@ public class Body {
     
     // Real-universe bodies
     public static final Body SUN = new Body(
-            "Sun", 1.99e30, 6.96e8, new Color(255, 255, 255));
+            "Sun", 1.99e30, 6.96e8, new Color(255, 249, 206));
 
     public static final Body MERCURY = new Body(
             "Mercury", 3.30e23, 2.44e6, new Color(114, 104, 103));
@@ -70,8 +70,21 @@ public class Body {
     public static final Body CHARON = new Body(
             "Charon", 1.59e21, 6.06e5, new Color(214, 182, 149));
 
+    public static final Body VEGA = new Body(
+            "Vega", 4.27e30, 1.64e9, new Color(206, 225, 255));
+    public static final Body POLARIS_AA = new Body(
+            "Polaris Aa", 1.08e31, 2.61e10, new Color(255, 255, 0));
     public static final Body VY_CANIS_MAJORIS = new Body(
             "VY Canis Majoris", 3.6e30, 9.88e11, new Color(255, 67, 0));
+    public static final Body ZETA_SCORPII = new Body(
+            "Zeta Scorpii", 7.2e31, 7.17e10, new Color(155, 193, 255));
+
+    public static final Body NEUTRON_STAR = new Body(
+            "Neutron Star", 4e30, 1e4, new Color(255, 255, 255));
+    public static final Body CYGNUS_X_1 = new Body(
+            "Black Hole Cygnus X-1", 3e31, 1.46e10, new Color(0, 0, 0));
+    public static final Body H1821_643 = new Body(
+            "Quasar H1821+643", 6e40, 8.6e13, new Color(0, 0, 0));
 
     private String name;
     private double mass;
@@ -116,7 +129,13 @@ public class Body {
         defaultBodies.add(TRITON);
         defaultBodies.add(PLUTO);
         defaultBodies.add(CHARON);
+        defaultBodies.add(VEGA);
+        defaultBodies.add(POLARIS_AA);
         defaultBodies.add(VY_CANIS_MAJORIS);
+        defaultBodies.add(ZETA_SCORPII);
+        defaultBodies.add(NEUTRON_STAR);
+        defaultBodies.add(CYGNUS_X_1);
+        defaultBodies.add(H1821_643);
 
         return defaultBodies;
     }

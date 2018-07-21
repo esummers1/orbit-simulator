@@ -16,6 +16,8 @@ Controls:
 - 'n': toggle name labels for entities
 - 'a': increase time acceleration factor
 - 'd': decrease time acceleration factor
+- '+': increase overlay zoom factor
+- '_': decrease overlay zoom factor
 
 Click, drag and release to 'shoot' an entity into the simulation, using the currently selected body.
 

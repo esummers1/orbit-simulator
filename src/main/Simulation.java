@@ -85,16 +85,22 @@ public class Simulation extends MouseInputAdapter implements KeyListener {
     private static final double SCALE_FACTOR_INCREMENT = 1.1;
 
     /*
-      * The factor by which the entity display factor is altered per frame when
-      * zoom input is given.
-      */
+     * The factor by which the entity display factor is altered per frame when
+     * zoom input is given.
+     */
     private static final double DISPLAY_SCALE_FACTOR_INCREMENT = 1.01;
 
     /*
-      * The factor by which the time acceleration factor is altered per frame
-      * when acceleration/deceleration input is given.
-      */
-    private static final double TIME_ACCELERATION_FACTOR_INCREMENT = 1.001;
+     * The factor by which the time acceleration factor is altered per frame
+     * when acceleration/deceleration input is given.
+     */
+    private static final double TIME_ACCELERATION_FACTOR_INCREMENT = 1.002;
+
+    /*
+     * The factor by which the magnifier overlay zoom factor is altered per
+     * input.
+     */
+    private static final double OVERLAY_ZOOM_FACTOR_INCREMENT = 2;
     
     // Key constants
     private static final char CYCLE_FOCUS_FORWARD_KEY = ']';
@@ -110,6 +116,8 @@ public class Simulation extends MouseInputAdapter implements KeyListener {
     private static final char DRAW_NAME_LABEL_KEY = 'n';
     private static final char ACCELERATE_TIME_KEY = 'a';
     private static final char DECELERATE_TIME_KEY = 'd';
+    private static final char INCREASE_OVERLAY_ZOOM_KEY = '+';
+    private static final char DECREASE_OVERLAY_ZOOM_KEY = '_';
     
     public Simulation(Scenario scenario) {
 
@@ -299,6 +307,20 @@ public class Simulation extends MouseInputAdapter implements KeyListener {
 
         if (currentKey == DECELERATE_TIME_KEY) {
             timeStep /= TIME_ACCELERATION_FACTOR_INCREMENT;
+            updateSimulationTitle(this);
+        }
+
+        if (currentKey == INCREASE_OVERLAY_ZOOM_KEY) {
+            overlayZoomFactor *= OVERLAY_ZOOM_FACTOR_INCREMENT;
+            MyPanel.setOverlayZoomFactor(overlayZoomFactor);
+            resetCurrentKey();
+            updateSimulationTitle(this);
+        }
+
+        if (currentKey == DECREASE_OVERLAY_ZOOM_KEY && overlayZoomFactor > 1) {
+            overlayZoomFactor /= OVERLAY_ZOOM_FACTOR_INCREMENT;
+            MyPanel.setOverlayZoomFactor(overlayZoomFactor);
+            resetCurrentKey();
             updateSimulationTitle(this);
         }
 
@@ -609,10 +631,20 @@ public class Simulation extends MouseInputAdapter implements KeyListener {
 
         entities.add(entity);
         updateSimulationTitle(this);
+
+        /*
+         * If this is the first Entity in the Simulation, adjust scale factor
+         * to match.
+         */
+        if (entities.size() == 1) {
+            sizedScaleFactor =
+                    Physics.calculateAppropriateScaleFactor(entities) /
+                        Display.WINDOW_SIZE;
+        }
     }
     
     /**
-     * If the pressed key is one of the keys which can meaningfully be 'held'
+     * If the pressed key is one of the keys which can meaningfully be held
      * for multiple frames, store it as the current key.
      */
     @Override
@@ -660,7 +692,9 @@ public class Simulation extends MouseInputAdapter implements KeyListener {
                 key == CENTRE_KEY ||
                 key == ENTITY_SCALE_RESET_KEY || 
                 key == RESET_ZOOM_KEY ||
-                key == DRAW_NAME_LABEL_KEY) {
+                key == DRAW_NAME_LABEL_KEY ||
+                key == INCREASE_OVERLAY_ZOOM_KEY ||
+                key == DECREASE_OVERLAY_ZOOM_KEY) {
 
             currentKey = key;
 

@@ -32,7 +32,7 @@ public class MyPanel extends JPanel {
     private static double overlayZoomFactor;
     
     // The size in pixels of the magnifier overlay square
-    private static final int MAGNIFIER_OVERLAY_SIZE = 200;
+    private static final int MAGNIFIER_OVERLAY_SIZE = 250;
 
     private List<Entity> entities;
     private BufferedImage magnifiedImage;
@@ -203,6 +203,10 @@ public class MyPanel extends JPanel {
      */
     public void updateEntityList(List<Entity> entities) {
         this.entities = entities;
+    }
+
+    public static void setOverlayZoomFactor(double overlayZoomFactor) {
+        MyPanel.overlayZoomFactor = overlayZoomFactor;
     }
     
 }

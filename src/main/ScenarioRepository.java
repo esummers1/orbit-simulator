@@ -27,8 +27,7 @@ public class ScenarioRepository {
     public static ScenarioRepository retrieveAllScenarios() {
         
         List<Scenario> allScenarios = new ArrayList<>();
-        allScenarios.add(createEmptyPlanetaryScaleScenario());
-        allScenarios.add(createEmptyStellarScaleScenario());
+        allScenarios.add(createEmptyScenario());
         allScenarios.add(createEarthMoonScenario());
         allScenarios.add(createInnerPlanetsScenario());
         allScenarios.add(createJupiterAndMoonsScenario());
@@ -79,37 +78,17 @@ public class ScenarioRepository {
     }
 
     /**
-     * Create an empty Scenario scaled appropriately for instantiating planets.
+     * Create an empty Scenario.
      * @return Scenario
      */
-    private static Scenario createEmptyPlanetaryScaleScenario() {
-
-        List<Entity> mockEntities = new ArrayList<>();
-        mockEntities.add(new Entity(Body.EARTH, 0, 0, 0, 0));
+    private static Scenario createEmptyScenario() {
 
         return new Scenario(
-                "Empty Simulation - Planetary Scale",
+                "Empty Simulation",
                 new ArrayList<>(),
-                2e4,
-                3,
-                Physics.calculateAppropriateScaleFactor(mockEntities));
-    }
-
-    /**
-     * Create an empty Scenario scaled appropriately for instantiating stars.
-     * @return Scenario
-     */
-    private static Scenario createEmptyStellarScaleScenario() {
-
-        List<Entity> mockEntities = new ArrayList<>();
-        mockEntities.add(new Entity(Body.SUN, 0, 0, 0, 0));
-
-        return new Scenario(
-                "Empty Simulation - Stellar Scale",
-                new ArrayList<>(),
-                6e6,
-                100,
-                Physics.calculateAppropriateScaleFactor(mockEntities));
+                1e4,
+                10,
+                1);
     }
 
     /**

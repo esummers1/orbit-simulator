@@ -49,6 +49,9 @@ public class Display {
         title += " | Time Acceleration: " + displayDoubleAsScientific(
                 Simulation.getTimeStep() * Simulation.FRAME_RATE, 2);
 
+        // Display overlay zoom factor.
+        title += " | Overlay Zoom: " + sim.getOverlayZoomFactor() + "x";
+
         /*
          * Highlight the Entity which is the current focus of the simulation,
          * if one is.
